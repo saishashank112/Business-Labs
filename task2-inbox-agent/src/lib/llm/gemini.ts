@@ -6,7 +6,7 @@ export class GeminiProvider implements LLMClient {
   private apiKey: string;
 
   constructor(modelName?: string, apiKey?: string) {
-    this.modelName = modelName || process.env.T2_DRAFT_MODEL || "gemini-2.0-flash";
+    this.modelName = modelName || process.env.T2_DRAFT_MODEL || "gemini-3.8-flash";
     this.apiKey = apiKey || process.env.GEMINI_API_KEY || "";
   }
 

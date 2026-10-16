@@ -4,9 +4,9 @@ import path from "node:path";
 const require = createRequire(import.meta.url);
 const { DatabaseSync } = require("node:sqlite");
 
-let dbInstance: DatabaseSync | null = null;
+let dbInstance: any = null;
 
-export function getDb(): DatabaseSync {
+export function getDb(): any {
   if (dbInstance) {
     return dbInstance;
   }

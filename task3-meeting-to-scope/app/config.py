@@ -17,11 +17,11 @@ class Settings(BaseSettings):
     t1_api_key: str = "change-me-in-production"
 
     # Model names per agent
-    t3_extract_model: str = "gemini-2.0-flash"
-    t3_feasibility_model: str = "gemini-2.0-flash"
-    t3_scope_model: str = "gemini-2.0-flash"
-    t3_estimate_model: str = "gemini-2.0-flash"
-    t3_proposal_model: str = "gemini-2.0-flash"
+    t3_extract_model: str = "gemini-3.8-flash"
+    t3_feasibility_model: str = "gemini-3.8-flash"
+    t3_scope_model: str = "gemini-3.8-flash"
+    t3_estimate_model: str = "gemini-3.8-flash"
+    t3_proposal_model: str = "gemini-3.8-flash"
 
     class Config:
         env_file = "../.env"

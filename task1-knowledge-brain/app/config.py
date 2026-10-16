@@ -4,14 +4,18 @@ Every field below maps to an environment variable.
 Example: t1_api_key  →  T1_API_KEY in .env
 """
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+
+load_dotenv()
+load_dotenv("../.env")
 
 
 class Settings(BaseSettings):
     """Central config for the Knowledge Brain service."""
 
     # ── API authentication ──────────────────────────────────
-    t1_api_key: str = "dev-key"
+    t1_api_key: str = "change-me-in-production"
 
     # ── Database paths ──────────────────────────────────────
     t1_db_path: str = "task1.db"
@@ -31,8 +35,8 @@ class Settings(BaseSettings):
     t1_port: int = 8001
 
     # ── Model names (never hard-coded; set in .env) ─────────
-    t1_rag_model: str = "gemini-2.0-flash"
-    t1_image_model: str = "gemini-2.0-flash"
+    t1_rag_model: str = "gemini-3.8-flash"
+    t1_image_model: str = "gemini-3.8-flash"
     t1_embed_model: str = "all-MiniLM-L6-v2"
 
     # ── LLM API keys ───────────────────────────────────────
@@ -42,7 +46,7 @@ class Settings(BaseSettings):
     # ── Profile ─────────────────────────────────────────────
     profile: str = "dev"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": [".env", "../.env"], "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 # Single instance used everywhere via:  from app.config import settings

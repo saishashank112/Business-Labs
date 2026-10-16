@@ -11,11 +11,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    deps: {
-      external: [/^node:/],
-    },
-  },
   ssr: {
     external: ["node:sqlite"],
   },

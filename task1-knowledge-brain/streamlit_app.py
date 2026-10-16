@@ -10,6 +10,10 @@ import json
 import asyncio
 import httpx
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
+load_dotenv("../.env")
 
 # Configure page
 st.set_page_config(
