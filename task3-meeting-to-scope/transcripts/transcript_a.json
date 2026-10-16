@@ -1,0 +1,66 @@
+{
+  "id": "transcript_a",
+  "project_id": "proj_lawyers_directory",
+  "project_name": "Local Lawyers Directory Portal",
+  "label": "A",
+  "meeting_date": "2026-10-10",
+  "is_follow_up": false,
+  "parent_transcript_id": null,
+  "client_name": "Emily Watson",
+  "client_role": "Managing Director, Law Firms Network",
+  "consultant_name": "Alex Rivera",
+  "consultant_role": "Senior AI Technical Consultant",
+  "target_delivery_date": "2026-11-15",
+  "dialogue": [
+    {
+      "timestamp": "00:01:15",
+      "speaker": "Emily Watson",
+      "text": "Thanks for getting on the call, Alex. We have an existing Drupal database with about 4,000 attorneys across 80 practice areas. Our first key requirement is importing our complete category taxonomy via CSV without breaking existing parent-child category relationships."
+    },
+    {
+      "timestamp": "00:02:40",
+      "speaker": "Alex Rivera",
+      "text": "Brilliant Directories has a dedicated Category Import tool that accepts CSV files with Master, Sub, and Sub-Sub levels. We can format your taxonomy according to the platform specification so all 80 categories and their nested jurisdictions upload cleanly."
+    },
+    {
+      "timestamp": "00:04:10",
+      "speaker": "Emily Watson",
+      "text": "Second, when a potential client visits an attorney's listing and fills out the contact form, we want that inquiry automatically forwarded to the attorney's private corporate email address, like partner@smithlaw.com, while keeping an audit copy on the domain."
+    },
+    {
+      "timestamp": "00:05:30",
+      "speaker": "Alex Rivera",
+      "text": "Understood. That is handled via Email Forwarders and the Lead Routing module in Brilliant Directories. We will configure custom email forwarders for each attorney tier so leads route seamlessly."
+    },
+    {
+      "timestamp": "00:07:05",
+      "speaker": "Emily Watson",
+      "text": "Third, we want to broadcast a monthly legal newsletter to all 4,000 attorneys. Can we execute mass email campaigns directly from the Brilliant Directories dashboard?"
+    },
+    {
+      "timestamp": "00:08:20",
+      "speaker": "Alex Rivera",
+      "text": "Brilliant Directories has an internal newsletter tool, but for broadcasting to 4,000 recipients regularly without landing in spam, the documentation explicitly recommends integrating third-party transactional email providers such as SendGrid or Mailchimp. We will set up the Mailchimp webhook integration for your monthly campaigns."
+    },
+    {
+      "timestamp": "00:10:45",
+      "speaker": "Emily Watson",
+      "text": "Fourth requirement: On our homepage, visitors must be able to type a city or zip code and see auto-completed suggestions with an interactive map of nearby attorneys."
+    },
+    {
+      "timestamp": "00:11:50",
+      "speaker": "Alex Rivera",
+      "text": "We will provision and configure the Google Maps JavaScript, Geocoding, and Places API keys in General Settings, and optimize the search radius."
+    },
+    {
+      "timestamp": "00:13:30",
+      "speaker": "Emily Watson",
+      "text": "Lastly, our team needs 5 hours of remote staff training on managing member listings and reviewing leads once everything is live. And our board needs this complete by November 15, 2026."
+    },
+    {
+      "timestamp": "00:14:15",
+      "speaker": "Alex Rivera",
+      "text": "We will include 5 hours of dedicated staff training and target November 15, 2026 for final launch. I will extract these requirements, verify platform feasibility, and prepare the formal Scope of Work."
+    }
+  ]
+}

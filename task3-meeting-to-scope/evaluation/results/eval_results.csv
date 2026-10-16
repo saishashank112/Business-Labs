@@ -1,0 +1,21 @@
+case_id,type,category,passed,latency_ms,details
+t3-eval-01,typical,transcript_analysis,True,0,Extracted 1 requirements
+t3-eval-02,typical,feasibility_check,True,821,Feasibility: existing_config
+t3-eval-03,typical,feasibility_check,True,746,Feasibility: existing_config
+t3-eval-04,typical,scope_drafting,True,0,Generated 3 deliverables
+t3-eval-05,typical,estimation,True,0,"Estimated 22.0h ($3,300.00)"
+t3-eval-06,typical,proposal_generation,True,0,Generated proposal 'Technical Project Proposal — Scope of Work — Dentist Directory Launch (v1)'
+t3-eval-07,typical,transcript_analysis,True,0,Extracted 1 requirements
+t3-eval-08,typical,feasibility_check,True,730,Feasibility: needs_clarification
+t3-eval-09,typical,estimation,True,0,"Estimated 10.0h ($1,500.00)"
+t3-eval-10,typical,scope_diff,True,1,Diff: +0 / -0
+t3-eval-11,edge,transcript_analysis,True,0,Extracted 1 requirements
+t3-eval-12,edge,estimation,True,0,Estimated 5.0h ($750.00)
+t3-eval-13,edge,transcript_analysis,True,0,Extracted 1 requirements
+t3-eval-14,edge,feasibility_check,True,1236,Feasibility: needs_clarification
+t3-eval-15,edge,proposal_generation,True,0,Generated proposal 'Technical Project Proposal — Scope of Work — Open-Ended Directory Migration (v1)'
+t3-eval-16,adversarial,estimation,True,0,Feasible: False (Requested 60h vs 4h)
+t3-eval-17,adversarial,scope_diff,True,0,Diff: +1 / -1
+t3-eval-18,adversarial,transcript_analysis,True,0,Extracted 0 requirements
+t3-eval-19,adversarial,scope_diff,True,0,Diff: +0 / -1
+t3-eval-20,adversarial,feasibility_check,True,1313,Feasibility: needs_clarification

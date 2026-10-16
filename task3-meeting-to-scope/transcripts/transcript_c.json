@@ -1,0 +1,56 @@
+{
+  "id": "transcript_c",
+  "project_id": "proj_lawyers_directory",
+  "project_name": "Local Lawyers Directory Portal",
+  "label": "C",
+  "meeting_date": "2026-10-14",
+  "is_follow_up": true,
+  "parent_transcript_id": "transcript_a",
+  "client_name": "Emily Watson",
+  "client_role": "Managing Director, Law Firms Network",
+  "consultant_name": "Alex Rivera",
+  "consultant_role": "Senior AI Technical Consultant",
+  "target_delivery_date": "2026-12-05",
+  "dialogue": [
+    {
+      "timestamp": "00:01:05",
+      "speaker": "Emily Watson",
+      "text": "Hi Alex, thank you for jumping back on the call. Following our internal partner meeting yesterday, we have three crucial modifications to the scope we agreed upon in Transcript A."
+    },
+    {
+      "timestamp": "00:02:20",
+      "speaker": "Alex Rivera",
+      "text": "Glad to reconnect, Emily. Let's walk through each adjustment so I can update our baseline scope and run a formal scope diff."
+    },
+    {
+      "timestamp": "00:03:10",
+      "speaker": "Emily Watson",
+      "text": "First, our security compliance committee has mandated two-factor authentication. We want to ADD an SMS two-factor verification requirement using Twilio when attorneys register or edit their profile credentials."
+    },
+    {
+      "timestamp": "00:04:45",
+      "speaker": "Alex Rivera",
+      "text": "Got it. That is an ADDED requirement: Twilio SMS 2FA integration for attorney registration and profile management. I will evaluate platform feasibility and estimate the custom engineering hours required."
+    },
+    {
+      "timestamp": "00:06:00",
+      "speaker": "Emily Watson",
+      "text": "Second, regarding the mass email campaign integration with Mailchimp that we discussed: our marketing VP confirmed we already pay for HubSpot enterprise. We have decided to REMOVE the mass email marketing integration from your scope entirely, as our internal team will sync contacts to HubSpot on their own."
+    },
+    {
+      "timestamp": "00:07:15",
+      "speaker": "Alex Rivera",
+      "text": "Noted. That will be marked as REMOVED from the active scope, which will deduct the corresponding setup and testing hours from the project estimate."
+    },
+    {
+      "timestamp": "00:08:30",
+      "speaker": "Emily Watson",
+      "text": "Lastly, because our legal committee needs additional time to finalize our privacy policy, we need to CHANGE our target delivery date. Can we move the final delivery milestone from November 15 to December 5, 2026?"
+    },
+    {
+      "timestamp": "00:09:20",
+      "speaker": "Alex Rivera",
+      "text": "Yes, moving the delivery target to December 5, 2026 gives us comfortable breathing room, especially with the Twilio SMS addition. All other requirements from Transcript A remain unchanged: CSV category import, email forwarders, Google Maps autocomplete, and 5 hours of staff training. I will generate a formal Change Report comparing against our approved baseline."
+    }
+  ]
+}

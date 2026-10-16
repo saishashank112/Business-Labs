@@ -1,0 +1,56 @@
+{
+  "id": "transcript_b",
+  "project_id": "proj_artisan_bakers",
+  "project_name": "Artisan Bakers Guild E-commerce Portal",
+  "label": "B",
+  "meeting_date": "2026-10-12",
+  "is_follow_up": false,
+  "parent_transcript_id": null,
+  "client_name": "Tom Miller",
+  "client_role": "President, Artisan Bakers Guild UK",
+  "consultant_name": "Alex Rivera",
+  "consultant_role": "Senior AI Technical Consultant",
+  "target_delivery_date": "2026-12-01",
+  "dialogue": [
+    {
+      "timestamp": "00:01:00",
+      "speaker": "Tom Miller",
+      "text": "Hello Alex. We are building a nationwide directory of artisanal sourdough bakeries. The core feature is allowing bakeries to sign up online and pay a monthly subscription fee of 49 pounds sterling via Stripe."
+    },
+    {
+      "timestamp": "00:02:15",
+      "speaker": "Alex Rivera",
+      "text": "Brilliant Directories natively integrates with Stripe. We will configure your Stripe Payment Gateway credentials, set up the monthly recurring product tier, and enable automatic webhooks for renewal processing."
+    },
+    {
+      "timestamp": "00:03:50",
+      "speaker": "Tom Miller",
+      "text": "Our domain is artisanbakers.co.uk. We have pointed nameservers, but we need an active SSL certificate so members see the padlock and https everywhere."
+    },
+    {
+      "timestamp": "00:04:45",
+      "speaker": "Alex Rivera",
+      "text": "Brilliant Directories includes free Let's Encrypt SSL certificates. Once nameserver propagation is verified, we will generate and activate the SSL certificate directly in the admin panel."
+    },
+    {
+      "timestamp": "00:06:10",
+      "speaker": "Tom Miller",
+      "text": "We also want our social media channels linked in the site footer: Instagram, Facebook, and a YouTube baking tutorial channel."
+    },
+    {
+      "timestamp": "00:07:00",
+      "speaker": "Alex Rivera",
+      "text": "We will configure the Social Media tab in General Settings with your respective profile URLs and verified icon font display."
+    },
+    {
+      "timestamp": "00:08:30",
+      "speaker": "Tom Miller",
+      "text": "Our deadline for this portal is December 1, 2026 in time for the holiday season."
+    },
+    {
+      "timestamp": "00:09:10",
+      "speaker": "Alex Rivera",
+      "text": "December 1, 2026 is confirmed. We will draft the full scope and estimate based on these requirements."
+    }
+  ]
+}
