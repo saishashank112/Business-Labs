@@ -42,4 +42,7 @@ For lengthy transcripts (such as 15-minute to 60-minute calls exceeding 40 dialo
 1. **Partitioning:** The dialogue is partitioned into staged windows of 35 turns with an overlap of 5 turns (`staged_chunk_dialogue`).
 2. **Staged Extraction:** Each chunk is analyzed independently to extract candidate requirement changes while filtering out conversational pleasantries and consultant repetitions.
 3. **Merge & Deduplication Step (`merge_extracted_requirements`):** Candidate statements from all chunks are consolidated, canonicalized by intent, and deduplicated.
-4. **Verification Test:** Verified in `tests/test_transcript_chunking.py` against `transcripts_user/test_messy_150lines.txt` (155 lines $\to$ 2 staged chunks $\to$ merge step).
+4. **Verification Test:** Verified in `tests/test_transcript_chunking.py` against `transcripts_user/test_messy_150lines.txt` (155 lines $\to$ staged chunks $\to$ merge step).
+
+> [!NOTE]
+> **Offline Test Classification:** In unit tests and offline testing mode, `test_messy_150lines.txt` is processed via `offline_heuristic` rules to make zero paid LLM calls. This test is explicitly classified as a **staged chunking and merge deduplication test**, and is not an LLM long-transcript extraction evaluation.

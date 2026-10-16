@@ -88,3 +88,11 @@ async def test_startup_refuses_final_profile_with_empty_claude_ids(monkeypatch):
     with pytest.raises(RuntimeError, match="Final profile requires CLAUDE_MODEL_FAST"):
         async with lifespan(app):
             pass
+
+
+@pytest.mark.asyncio
+async def test_no_test_data_leak_in_real_task1_db():
+    """Verify that Task 1 tests run against an isolated temporary database, not real task1.db."""
+    from pathlib import Path
+
+    assert "task1_test.db" in settings.t1_db_path

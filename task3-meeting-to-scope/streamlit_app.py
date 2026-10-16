@@ -76,6 +76,18 @@ with st.sidebar:
     hourly_rate = st.number_input("Consultant Hourly Rate ($/hr)", min_value=50, max_value=500, value=150)
     currency = st.selectbox("Currency", ["USD", "GBP", "EUR"], index=0)
 
+    st.divider()
+    st.subheader("🧪 Mode Settings")
+    sample_data_demo = st.checkbox(
+        "📂 Sample data demo",
+        value=False,
+        help="Loads the committed 5-requirement fixture as approved baseline for UI demonstration without LLM calls. Never used in evals.",
+    )
+
+
+# ── Banner if in Sample Data Demo Mode ───────────────────────
+if sample_data_demo:
+    st.warning("⚠️ **SAMPLE DATA, NOT LLM OUTPUT** — Running in Sample Data Demo Mode using committed benchmark fixture (`baseline_lawyers_directory.json`). This mode is strictly for UI walkthroughs and must NEVER be used in evaluations or benchmark results tables.")
 
 # ── Tabs ────────────────────────────────────────────────────
 tab_pipeline, tab_approval, tab_diff = st.tabs([
@@ -252,7 +264,13 @@ with tab_approval:
     st.subheader("🔒 Human Approval Gate")
     st.markdown("PRD Requirement: Proposals and Scope baselines MUST be approved by an authorized reviewer before sending or diffing.")
 
-    scope_id_input = st.text_input("Scope Version ID to Approve:", value="scope-proj_lawyers_directory-v1")
+    if sample_data_demo:
+        st.info("ℹ️ **Sample data demo active**: The committed 5-requirement benchmark fixture (`baseline_lawyers_directory.json`) is pre-approved for demonstration.")
+        scope_id_input = "sample_data_demo"
+    else:
+        st.warning("⚠️ Note: The stored baseline `scope-proj_lawyers_directory-v1` in `task3.db` is currently marked as `degraded_offline`. Formal approval is blocked until rebuilt with an LLM.")
+        scope_id_input = st.text_input("Scope Version ID to Approve:", value="scope-proj_lawyers_directory-v1")
+
     reviewer_input = st.text_input("Reviewer Name:", value="Emily Watson (Managing Director)")
 
     if st.button("✅ Formally Approve Scope Baseline", type="primary"):
@@ -266,7 +284,16 @@ with tab_approval:
                 st.success(f"Scope '{scope_id_input}' has been approved by {reviewer_input}!")
                 st.session_state["baseline_approved"] = True
             else:
-                st.error(f"Approval failed: {res}")
+                err_detail = str(res.get("data", {}).get("detail", res.get("error", "")))
+                if "degraded_offline" in err_detail:
+                    st.error(
+                        "🛑 **BASELINE APPROVAL BLOCKED**: Stored baseline `scope-proj_lawyers_directory-v1` is marked as `degraded_offline` "
+                        "(created via fallback offline heuristic rules during quota exhaustion). Approval of degraded scopes is strictly blocked to prevent ungrounded baselines.\n\n"
+                        "👉 **What to do:** Rebuild the baseline with the LLM using the 5-Agent Pipeline (Transcript A) once model quota is available. "
+                        "To preview the approval/diff UI immediately, enable **'📂 Sample data demo'** in the sidebar."
+                    )
+                else:
+                    st.error(f"Approval failed: {err_detail}")
 
 
 # ── Tab 3: Follow-Up Scope Diff ─────────────────────────────
@@ -274,19 +301,31 @@ with tab_diff:
     st.subheader("🔄 Follow-Up Scope Diff (Transcript C vs Baseline A)")
     st.markdown("Compares follow-up meeting modifications strictly against the **APPROVED** baseline scope.")
 
-    baseline_id = st.text_input("Approved Baseline Scope ID:", value="scope-proj_lawyers_directory-v1")
+    if sample_data_demo:
+        st.markdown("### 🧪 Sample Data Demo Mode")
+        st.caption("Diffing Transcript C against the approved 5-requirement benchmark fixture (`baseline_lawyers_directory.json`).")
+        baseline_id = "sample_data_demo"
+    else:
+        baseline_id = st.text_input("Approved Baseline Scope ID:", value="scope-proj_lawyers_directory-v1")
 
     if st.button("🔍 Run Scope Diff against Approved Baseline"):
         with st.spinner("Analyzing Transcript C modifications vs approved baseline..."):
+            payload = {
+                "baseline_scope_id": baseline_id,
+                "follow_up_transcript_id": "transcript_c",
+                "sample_data_demo": sample_data_demo,
+            }
             res = call_t3_api(
                 "POST",
                 "/api/projects/proj_lawyers_directory/compare",
-                {"baseline_scope_id": baseline_id, "follow_up_transcript_id": "transcript_c"},
+                payload,
             )
 
             if res.get("status_code") == 200:
                 diff_data = res["data"]
                 report = diff_data["diff_report"]
+                if diff_data.get("is_sample_demo") or sample_data_demo:
+                    st.warning("⚠️ **SAMPLE DATA, NOT LLM OUTPUT** — This comparison was run using the committed 5-requirement benchmark fixture. Strictly prohibited for evaluation scoring.")
                 st.success("Scope Diff Generated Successfully!")
 
                 st.markdown("### 📋 Change Report Summary")
@@ -313,4 +352,13 @@ with tab_diff:
                 for d in rev_scope.get("deliverables", []):
                     st.write(f"- {d}")
             else:
-                st.error(f"Diff execution failed: {res.get('error', res.get('data'))}")
+                err_detail = str(res.get("data", {}).get("detail", res.get("error", "")))
+                if "degraded_offline" in err_detail:
+                    st.error(
+                        "🛑 **MEETING TO SCOPE DEMO BLOCKED**: The baseline scope is marked as `degraded_offline` "
+                        "(extracted via rule-based offline heuristics during quota exhaustion). Diffing against degraded baselines is strictly blocked to preserve evaluation integrity.\n\n"
+                        "👉 **What to do:** Rebuild the baseline scope using the 5-Agent Analysis Pipeline (Transcript A) with an LLM once a model is available. "
+                        "To explore the diff interface right now, toggle **'📂 Sample data demo'** in the sidebar."
+                    )
+                else:
+                    st.error(f"Diff execution failed: {err_detail}")

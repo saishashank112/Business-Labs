@@ -11,8 +11,9 @@ export function getDb(): any {
     return dbInstance;
   }
 
-  // Database file stored locally in project folder
-  const dbPath = path.resolve(process.cwd(), "task2.db");
+  // Use temporary in-memory database during vitest / test runs
+  const isTest = process.env.NODE_ENV === "test" || Boolean(process.env.VITEST);
+  const dbPath = process.env.TASK2_DB_PATH || (isTest ? ":memory:" : path.resolve(process.cwd(), "task2.db"));
   dbInstance = new DatabaseSync(dbPath);
 
   // Initialize schema

@@ -46,4 +46,20 @@ describe("Auto-Send 20-Draft Rule Engine", () => {
     expect(lastResult.consecutive).toBe(20);
     expect(lastResult.eligible).toBe(true);
   });
+
+  it("fails if test data appears in the real database (task2.db)", () => {
+    const fs = require("node:fs");
+    const path = require("node:path");
+    const { DatabaseSync } = require("node:sqlite");
+
+    const realDbPath = path.resolve(process.cwd(), "task2.db");
+    if (fs.existsSync(realDbPath)) {
+      const realDb = new DatabaseSync(realDbPath);
+      const leakedRules = realDb.prepare("SELECT kind FROM auto_send_rules WHERE kind LIKE 'test-%' OR kind LIKE 'twenty-sends-%'").all();
+      expect(leakedRules.length, `Leaked test rules found in real task2.db: ${JSON.stringify(leakedRules)}`).toBe(0);
+
+      const leakedAudit = realDb.prepare("SELECT id FROM auto_send_audit WHERE kind LIKE 'test-%' OR kind LIKE 'twenty-sends-%'").all();
+      expect(leakedAudit.length, `Leaked test audit logs found in real task2.db: ${JSON.stringify(leakedAudit)}`).toBe(0);
+    }
+  });
 });

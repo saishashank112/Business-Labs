@@ -103,8 +103,13 @@ def test_staged_chunking_and_merge_step():
 
 
 @pytest.mark.asyncio
-async def test_extract_requirements_from_messy_transcript_end_to_end(monkeypatch):
-    """End-to-end staged extraction on 150-line messy transcript."""
+async def test_staged_chunking_and_merge_offline_pipeline(monkeypatch):
+    """Chunking and merge test only on 150-line test transcript.
+    
+    NOTE: Processed via offline_heuristic fallback to avoid paid API calls.
+    This test validates dialogue windowing and merge deduplication only;
+    it is NOT an LLM long-transcript extraction evaluation.
+    """
     from unittest.mock import MagicMock
     import agents.transcript_analyst as ta
 

@@ -1,6 +1,20 @@
 """Shared test fixtures."""
 
 import pytest
+from app.config import settings
+
+
+@pytest.fixture(autouse=True)
+def use_temporary_task1_db(tmp_path, monkeypatch):
+    """Ensure all Task 1 tests run against an isolated temporary database, never touching real task1.db."""
+    import shutil
+    from pathlib import Path
+
+    test_db = tmp_path / "task1_test.db"
+    real_db = Path(__file__).parent.parent / "task1.db"
+    if real_db.exists():
+        shutil.copyfile(real_db, test_db)
+    monkeypatch.setattr(settings, "t1_db_path", str(test_db))
 
 
 @pytest.fixture

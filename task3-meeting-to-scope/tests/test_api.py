@@ -159,3 +159,24 @@ async def test_analyze_transcript_a_and_approve(monkeypatch):
         assert len(comp_data["diff_report"]["added_requirements"]) >= 1
         assert len(comp_data["diff_report"]["removed_requirements"]) >= 1
 
+
+@pytest.mark.asyncio
+async def test_no_test_data_leak_in_real_task3_db():
+    """Verify that test suite execution uses an isolated temporary database and never leaks into real task3.db."""
+    import sqlite3
+    from pathlib import Path
+    from app.config import settings
+
+    # Ensure the active test settings point to a temporary test DB
+    assert "task3_test.db" in settings.t3_db_path
+
+    # Verify real task3.db does not contain mock test projects
+    real_db = Path(__file__).parent.parent / "task3.db"
+    if real_db.exists():
+        conn = sqlite3.connect(str(real_db))
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM projects WHERE id LIKE 'test_%'")
+        test_projects = cur.fetchall()
+        assert len(test_projects) == 0, f"Leaked test projects found in real task3.db: {test_projects}"
+        conn.close()
+

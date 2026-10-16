@@ -23,10 +23,21 @@ class ApprovalRequest(BaseModel):
 class CompareRequest(BaseModel):
     baseline_scope_id: str
     follow_up_transcript_id: str = "transcript_c"
+    sample_data_demo: bool = False
 
 
 @router.post("/{project_id}/approve")
 async def approve_scope(project_id: str, body: ApprovalRequest) -> dict:
+    if body.scope_version_id == "sample_data_demo":
+        return {
+            "success": True,
+            "message": "Sample fixture baseline is pre-approved for demonstration.",
+            "approved_by": body.reviewer,
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "is_sample_demo": True,
+            "sample_banner": "SAMPLE DATA, NOT LLM OUTPUT",
+        }
+
     await init_db()
     db = await get_db()
     try:
@@ -84,55 +95,90 @@ async def approve_scope(project_id: str, body: ApprovalRequest) -> dict:
 
 @router.post("/{project_id}/compare")
 async def compare_follow_up(project_id: str, body: CompareRequest) -> dict:
-    await init_db()
-    db = await get_db()
-    try:
-        # 1. Fetch baseline scope
-        cursor = await db.execute(
-            "SELECT content, status FROM scope_versions WHERE id = ?",
-            (body.baseline_scope_id,),
+    is_sample_demo = body.sample_data_demo or body.baseline_scope_id == "sample_data_demo"
+
+    if is_sample_demo:
+        fixture_path = Path(__file__).parent.parent.parent / "tests" / "fixtures" / "baseline_lawyers_directory.json"
+        if not fixture_path.exists():
+            raise HTTPException(status_code=500, detail="Fixture baseline_lawyers_directory.json not found")
+        fixture_reqs_data = json.loads(fixture_path.read_text(encoding="utf-8"))
+        fixture_reqs = [Requirement.model_validate(r) for r in fixture_reqs_data]
+        baseline_scope = ScopeDocument(
+            id="sample-baseline-lawyers-directory",
+            project_id=project_id,
+            version=1,
+            title="Scope of Work — Lawyers Directory (Sample Data Fixture)",
+            objective="Sample benchmark baseline for demonstration.",
+            current_problem="Sample benchmark problem statement.",
+            agreed_requirements=fixture_reqs,
+            proposed_solution="Native Brilliant Directories configurations for category hierarchies and lead routing.",
+            deliverables=[f"Delivery and validation of: {r.description}" for r in fixture_reqs],
+            exclusions=["Creation of new custom content, legal copywriting, or graphic design assets."],
+            assumptions_and_dependencies=["Client provides valid administrator credentials."],
+            acceptance_criteria=["All 5 baseline requirements validated on desktop and mobile viewports."],
+            client_responsibilities=["Provide final reviewed CSV taxonomy files."],
+            open_questions_and_risks=["DNS propagation."],
+            target_delivery_date="2026-11-15",
+            status="approved",
+            approved_by="Demo Reviewer (Sample Mode)",
+            approved_at=datetime.now(timezone.utc).isoformat(),
+            extraction_mode="sample_fixture",
         )
-        scope_row = await cursor.fetchone()
-        if not scope_row:
-            raise HTTPException(status_code=404, detail="Baseline scope not found")
-
-        # 2. Strict PRD Gate: Baseline MUST be approved and not degraded!
-        if scope_row["status"] == "degraded_offline":
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Baseline scope '{body.baseline_scope_id}' is marked as 'degraded_offline'. "
-                    "Degraded scopes cannot be used for evals or demo diffing. Rebuild with LLM."
-                ),
+        from agents.estimation_agent import generate_project_estimate
+        baseline_estimate = generate_project_estimate(baseline_scope)
+    else:
+        await init_db()
+        db = await get_db()
+        try:
+            # 1. Fetch baseline scope
+            cursor = await db.execute(
+                "SELECT content, status FROM scope_versions WHERE id = ?",
+                (body.baseline_scope_id,),
             )
-        if scope_row["status"] != "approved":
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Baseline scope '{body.baseline_scope_id}' is in '{scope_row['status']}' state. "
-                    "Follow-up comparisons require an APPROVED baseline before diffing."
-                ),
-            )
+            scope_row = await cursor.fetchone()
+            if not scope_row:
+                raise HTTPException(status_code=404, detail="Baseline scope not found")
 
-        baseline_scope = ScopeDocument.model_validate_json(scope_row["content"])
+            # 2. Strict PRD Gate: Baseline MUST be approved and not degraded!
+            if scope_row["status"] == "degraded_offline":
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"Baseline scope '{body.baseline_scope_id}' is marked as 'degraded_offline'. "
+                        "Degraded scopes cannot be used for evals or demo diffing. Rebuild with LLM once a model is available, "
+                        "or enable 'Sample data demo' mode in the UI for interactive demonstration."
+                    ),
+                )
+            if scope_row["status"] != "approved":
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"Baseline scope '{body.baseline_scope_id}' is in '{scope_row['status']}' state. "
+                        "Follow-up comparisons require an APPROVED baseline before diffing."
+                    ),
+                )
 
-        # Fetch baseline estimate
-        cursor_est = await db.execute(
-            "SELECT tasks, hourly_rate, currency, total_likely_hours, estimated_cost_likely FROM estimates WHERE scope_version_id = ?",
-            (body.baseline_scope_id,),
-        )
-        est_row = await cursor_est.fetchone()
-        if est_row:
-            baseline_estimate = ProjectEstimate(
-                id=f"est-{baseline_scope.id}",
-                scope_version_id=baseline_scope.id,
-                project_id=project_id,
-                total_likely_hours=est_row["total_likely_hours"],
-                estimated_cost_likely=est_row["estimated_cost_likely"],
+            baseline_scope = ScopeDocument.model_validate_json(scope_row["content"])
+
+            # Fetch baseline estimate
+            cursor_est = await db.execute(
+                "SELECT tasks, hourly_rate, currency, total_likely_hours, estimated_cost_likely FROM estimates WHERE scope_version_id = ?",
+                (body.baseline_scope_id,),
             )
-        else:
-            from agents.estimation_agent import generate_project_estimate
-            baseline_estimate = generate_project_estimate(baseline_scope)
+            est_row = await cursor_est.fetchone()
+            if est_row:
+                baseline_estimate = ProjectEstimate(
+                    id=f"est-{baseline_scope.id}",
+                    scope_version_id=baseline_scope.id,
+                    project_id=project_id,
+                    total_likely_hours=est_row["total_likely_hours"],
+                    estimated_cost_likely=est_row["estimated_cost_likely"],
+                )
+            else:
+                from agents.estimation_agent import generate_project_estimate
+                baseline_estimate = generate_project_estimate(baseline_scope)
+        finally:
+            await db.close()
 
         # 3. Load follow-up transcript (Transcript C)
         tdir = Path(__file__).parent.parent.parent / "transcripts"
@@ -166,38 +212,45 @@ async def compare_follow_up(project_id: str, body: CompareRequest) -> dict:
         )
 
         # 6. Save revised scope and change report to DB
-        await db.execute(
-            """INSERT OR REPLACE INTO scope_versions
-               (id, project_id, version, content, status, created_at)
-               VALUES (?, ?, ?, ?, 'draft', datetime('now'))""",
-            (revised_scope.id, project_id, revised_scope.version, revised_scope.model_dump_json()),
-        )
+        if not is_sample_demo:
+            db = await get_db()
+            try:
+                await db.execute(
+                    """INSERT OR REPLACE INTO scope_versions
+                       (id, project_id, version, content, status, created_at)
+                       VALUES (?, ?, ?, ?, 'draft', datetime('now'))""",
+                    (revised_scope.id, project_id, revised_scope.version, revised_scope.model_dump_json()),
+                )
 
-        await db.execute(
-            """INSERT OR REPLACE INTO change_reports
-               (id, project_id, baseline_scope_id, new_transcript_id, added, modified, removed, out_of_scope, conflicts, summary, created_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))""",
-            (
-                diff_report.id,
-                project_id,
-                diff_report.baseline_scope_id,
-                diff_report.new_transcript_id,
-                json.dumps(diff_report.added_requirements),
-                json.dumps(diff_report.modified_requirements),
-                json.dumps(diff_report.removed_requirements),
-                json.dumps(diff_report.out_of_scope_items),
-                json.dumps(diff_report.conflicts),
-                diff_report.summary,
-            ),
-        )
-        await db.commit()
+                await db.execute(
+                    """INSERT OR REPLACE INTO change_reports
+                       (id, project_id, baseline_scope_id, new_transcript_id, added, modified, removed, out_of_scope, conflicts, summary, created_at)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))""",
+                    (
+                        diff_report.id,
+                        project_id,
+                        diff_report.baseline_scope_id,
+                        diff_report.new_transcript_id,
+                        json.dumps(diff_report.added_requirements),
+                        json.dumps(diff_report.modified_requirements),
+                        json.dumps(diff_report.removed_requirements),
+                        json.dumps(diff_report.out_of_scope_items),
+                        json.dumps(diff_report.conflicts),
+                        diff_report.summary,
+                    ),
+                )
+                await db.commit()
+            finally:
+                await db.close()
 
-        return {
+        res = {
             "success": True,
             "extraction_mode": diff_report.extraction_mode,
             "diff_report": diff_report.model_dump(),
             "revised_scope": revised_scope.model_dump(),
             "revised_estimate": revised_estimate.model_dump(),
         }
-    finally:
-        await db.close()
+        if is_sample_demo:
+            res["is_sample_demo"] = True
+            res["sample_banner"] = "SAMPLE DATA, NOT LLM OUTPUT"
+        return res
