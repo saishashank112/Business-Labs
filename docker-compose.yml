@@ -1,0 +1,97 @@
+version: "3.8"
+
+services:
+  # ----------------------------------------------------
+  # Task 1: Knowledge Brain (FastAPI Core Engine)
+  # ----------------------------------------------------
+  task1-api:
+    build:
+      context: ./task1-knowledge-brain
+      dockerfile: Dockerfile
+    container_name: ai-tech-task1-api
+    ports:
+      - "8001:8001"
+    environment:
+      - T1_PORT=8001
+      - T1_API_KEY=bd_brain_secret_key_2026
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./task1-knowledge-brain/data:/app/data
+      - ./task1-knowledge-brain/task1.db:/app/task1.db
+    restart: unless-stopped
+
+  # ----------------------------------------------------
+  # Task 1: Knowledge Brain Streamlit Explorer
+  # ----------------------------------------------------
+  task1-ui:
+    build:
+      context: ./task1-knowledge-brain
+      dockerfile: Dockerfile.ui
+    container_name: ai-tech-task1-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - T1_API_URL=http://task1-api:8001
+      - T1_API_KEY=bd_brain_secret_key_2026
+    depends_on:
+      - task1-api
+    restart: unless-stopped
+
+  # ----------------------------------------------------
+  # Task 2: Inbox Agent (Next.js 14 Web Application)
+  # ----------------------------------------------------
+  task2-inbox:
+    build:
+      context: ./task2-inbox-agent
+      dockerfile: Dockerfile
+    container_name: ai-tech-task2-inbox
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - KNOWLEDGE_BRAIN_URL=http://task1-api:8001
+      - KNOWLEDGE_BRAIN_KEY=bd_brain_secret_key_2026
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - ./task2-inbox-agent/task2.db:/app/task2.db
+    depends_on:
+      - task1-api
+    restart: unless-stopped
+
+  # ----------------------------------------------------
+  # Task 3: Meeting to Scope (FastAPI Multi-Agent Core)
+  # ----------------------------------------------------
+  task3-api:
+    build:
+      context: ./task3-meeting-to-scope
+      dockerfile: Dockerfile
+    container_name: ai-tech-task3-api
+    ports:
+      - "8002:8002"
+    environment:
+      - T3_PORT=8002
+      - T1_BASE_URL=http://task1-api:8001
+      - T1_API_KEY=bd_brain_secret_key_2026
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - ./task3-meeting-to-scope/task3.db:/app/task3.db
+    depends_on:
+      - task1-api
+    restart: unless-stopped
+
+  # ----------------------------------------------------
+  # Task 3: Meeting to Scope Streamlit Review UI
+  # ----------------------------------------------------
+  task3-ui:
+    build:
+      context: ./task3-meeting-to-scope
+      dockerfile: Dockerfile.ui
+    container_name: ai-tech-task3-ui
+    ports:
+      - "8502:8502"
+    environment:
+      - T3_API_URL=http://task3-api:8002
+    depends_on:
+      - task3-api
+    restart: unless-stopped
