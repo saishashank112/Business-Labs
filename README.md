@@ -6,6 +6,8 @@
 [![Evaluations](https://img.shields.io/badge/Evaluation%20Suites-3%2F3%20Executed-blue)]()
 [![Architecture](https://img.shields.io/badge/Architecture-Decoupled%20HTTP%20APIs-purple)]()
 
+> 📘 **Looking for complete run instructions and port details?** Read the [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for a step-by-step walkthrough of all three localhost applications.
+
 ---
 
 ## 1. System Overview
