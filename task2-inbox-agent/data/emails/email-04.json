@@ -1,0 +1,16 @@
+{
+  "id": "email-04",
+  "subject": "Connecting Facebook and Twitter links in General Settings",
+  "from": "clara@weddingplannersnetwork.com",
+  "body": "Hi there,\nWhere in the admin panel can I paste our company Facebook, Twitter, and LinkedIn profile URLs so they appear in the site footer?\nRegards,\nClara",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Adding social profile URLs",
+    "Admin location for social media links"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558389-settings-general-settings-social-media-tab",
+  "is_holdout": false
+}

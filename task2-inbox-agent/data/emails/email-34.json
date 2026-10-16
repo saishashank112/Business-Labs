@@ -1,0 +1,16 @@
+{
+  "id": "email-34",
+  "subject": "Downgrade plan from Enterprise to Starter tier",
+  "from": "mia@weddingvenues.com.au",
+  "body": "Hello,\nWe are scaling back operations and wish to downgrade from our current Enterprise tier to the Starter tier. Will our existing listings be kept? Please adjust future billing.\nMia",
+  "expected_category": "refund",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Downgrade from Enterprise to Starter",
+    "Question regarding listing retention"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

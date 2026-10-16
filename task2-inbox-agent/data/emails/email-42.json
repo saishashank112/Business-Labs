@@ -1,0 +1,16 @@
+{
+  "id": "email-42",
+  "subject": "Pricing for Enterprise dedicated server hosting tier",
+  "from": "martin@dentistsnetwork.de",
+  "body": "Hello Sales,\nWe anticipate having over 100,000 verified listings and 500,000 monthly page views. Can you send us a quote for dedicated server hosting with guaranteed 99.99% uptime?\nMartin Becker",
+  "expected_category": "quote",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Quote for dedicated server hosting tier",
+    "100k listings scale"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

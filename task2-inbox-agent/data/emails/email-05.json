@@ -1,0 +1,16 @@
+{
+  "id": "email-05",
+  "subject": "Email Accounts creation quota and mailbox access",
+  "from": "marcus@localhealthpros.com",
+  "body": "Hello team,\nHow do I create new staff email inboxes under our domain name, and how can my team log into webmail to check their inbox?\nMarcus",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Creating new domain email accounts",
+    "Webmail access instructions"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558363-emails-email-accounts",
+  "is_holdout": false
+}

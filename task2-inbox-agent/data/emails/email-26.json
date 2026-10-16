@@ -1,0 +1,17 @@
+{
+  "id": "email-26",
+  "subject": "Complete site redesign and custom widget development",
+  "from": "olivia@coachingdirectory.co",
+  "body": "Dear team,\nOur current homepage looks dated. We want a bespoke design built on top of BD widgets, with dynamic hero filtering, video testimonials, and animated counters. Can we schedule a meeting to scope this?\nOlivia",
+  "expected_category": "project",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Full redesign request",
+    "Custom widget development",
+    "Client wants scoping meeting"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

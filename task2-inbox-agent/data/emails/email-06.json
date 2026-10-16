@@ -1,0 +1,16 @@
+{
+  "id": "email-06",
+  "subject": "How do I set up Stripe for member subscriptions?",
+  "from": "elena@fitnessinstructors.net",
+  "body": "Hello,\nWe want members to pay monthly recurring dues. What are the exact steps to connect our Stripe account to Brilliant Directories?\nElena",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Connecting Stripe gateway",
+    "Monthly recurring member dues"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "payment-gateways",
+  "is_holdout": false
+}

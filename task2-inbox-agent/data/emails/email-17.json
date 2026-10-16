@@ -1,0 +1,16 @@
+{
+  "id": "email-17",
+  "subject": "Member search results page loading extremely slowly (12+ seconds)",
+  "from": "anita@touristguides.es",
+  "body": "Hello,\nSince yesterday, whenever a visitor searches for 'Barcelona', the search results take 12 to 15 seconds to load. We only have 300 listings. Can you check our server logs?\nAnita",
+  "expected_category": "troubleshooting",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Search performance degradation (12s load)",
+    "300 listings total"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

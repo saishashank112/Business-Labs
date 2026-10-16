@@ -1,0 +1,16 @@
+{
+  "id": "email-01",
+  "subject": "Can I send mass email campaigns directly from my dashboard?",
+  "from": "sarah.jenkins@marketinghub.io",
+  "body": "Hello,\nWe are launching a new newsletter to our 45,000 members this Friday. Can I send mass email campaigns directly through Brilliant Directories or do we need an external tool?\nThanks,\nSarah",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Wants to send mass email to 45,000 members",
+    "Asking if BD supports mass campaigns natively"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558357-can-i-send-a-mass-email-campaign-using-brilliant-directories-",
+  "is_holdout": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-38",
+  "subject": "Misleading documentation regarding mass emailing capabilities",
+  "from": "valerie@authorguild.com",
+  "body": "Your sales page said Brilliant Directories includes 'Full Email Marketing Automation'. Now I find out we can't even send 20,000 newsletters without external tools. This is completely false advertising and I am reporting this to consumer protection.\nValerie",
+  "expected_category": "complaint",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Complaint regarding feature limits on mass email",
+    "Threatens regulatory complaint"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": "5000558357-can-i-send-a-mass-email-campaign-using-brilliant-directories-",
+  "is_holdout": false
+}

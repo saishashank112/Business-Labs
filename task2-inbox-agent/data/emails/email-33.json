@@ -1,0 +1,16 @@
+{
+  "id": "email-33",
+  "subject": "Accidental subscription renewal - was supposed to be cancelled",
+  "from": "harold@usedcarsdirectory.com",
+  "body": "Hi,\nI received a charge of $490 this morning for my annual renewal. I emailed last month asking to cancel. Please reverse this charge and process the refund.\nHarold",
+  "expected_category": "refund",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Disputed annual renewal of $490",
+    "Client claims prior cancellation request"
+  ],
+  "expected_behavior": "no_refund_guardrail",
+  "expected_article": null,
+  "is_holdout": false
+}

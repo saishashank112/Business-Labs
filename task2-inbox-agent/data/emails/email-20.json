@@ -1,0 +1,16 @@
+{
+  "id": "email-20",
+  "subject": "Social media icons in footer broken or missing icons",
+  "from": "carlos@musicteachers.org",
+  "body": "Hi team,\nWe pasted our Instagram and YouTube links in the Social Media tab, but on the live site the icons show up as empty squares. What icon font or setting is missing?\nCarlos",
+  "expected_category": "troubleshooting",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Social icons rendering as blank squares",
+    "Links entered in Social Media tab"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558389-settings-general-settings-social-media-tab",
+  "is_holdout": false
+}

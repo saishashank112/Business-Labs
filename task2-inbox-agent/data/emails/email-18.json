@@ -1,0 +1,16 @@
+{
+  "id": "email-18",
+  "subject": "Members not receiving signup verification emails",
+  "from": "derek@mechanicshub.com",
+  "body": "Hi,\nSeveral new users say they registered but never received the activation email with their password link. I checked the spam folder and nothing is there.\nDerek",
+  "expected_category": "troubleshooting",
+  "expected_risk": "medium",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Signup activation emails not delivered",
+    "Spam checked and empty"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558363-emails-email-accounts",
+  "is_holdout": false
+}

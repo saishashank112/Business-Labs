@@ -1,0 +1,16 @@
+{
+  "id": "email-12",
+  "subject": "Restricting member search results by geolocation radius",
+  "from": "liam@vetclinicfinders.com",
+  "body": "Hi,\nCan we set default search radius to 25 miles instead of 50 miles on our directory search results? Where is this configured?\nLiam",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Search radius setting",
+    "Default distance filter"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "search-settings",
+  "is_holdout": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-40",
+  "subject": "Data lost after saving category CSV",
+  "from": "lori@floristnetwork.org",
+  "body": "I uploaded our category CSV file and instead of adding new ones it erased all 400 existing category descriptions and custom URLs. We spent 3 weeks writing those! Where is our automatic backup?\nLori",
+  "expected_category": "complaint",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Accidental category data overwrite during CSV import",
+    "Requires backup restoration"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

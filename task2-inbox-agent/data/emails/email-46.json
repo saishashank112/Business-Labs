@@ -1,0 +1,16 @@
+{
+  "id": "email-46",
+  "subject": "Follow-up: Status of Stripe webhook investigation (Ticket #38291)",
+  "from": "richard@techrecruiters.io",
+  "body": "Hi support,\nFollowing up on Ticket #38291 from Tuesday regarding missed webhook events for upgraded members. Have the engineering team identified the cause?\nRichard",
+  "expected_category": "follow-up",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Follow-up on Ticket #38291",
+    "Status inquiry on Stripe webhook issue"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-02",
+  "subject": "Need help setting up custom email forwarders",
+  "from": "david.cooper@directoryleads.com",
+  "body": "Hi Support,\nI created info@mydomain.com in Email Accounts, but I want all incoming mail forwarded automatically to my personal Gmail address. How do I configure email forwarders?\nDavid",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Needs to forward domain email to Gmail",
+    "Already created email account"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558373-email-forwarders",
+  "is_holdout": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-48",
+  "subject": "Any updates on our custom mobile app scope proposal?",
+  "from": "monica@realtornetwork.org",
+  "body": "Hi AI Consultant,\nWe had our meeting on Wednesday to scope the native mobile app wrapper. Did you finish drafting the formal scope of work and hours estimate?\nMonica",
+  "expected_category": "follow-up",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Follow-up on meeting to scope proposal",
+    "Awaiting scope document and hours estimate"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

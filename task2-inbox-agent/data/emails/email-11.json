@@ -1,0 +1,16 @@
+{
+  "id": "email-11",
+  "subject": "How to export all member email addresses to Excel",
+  "from": "rachel@nonprofitnetwork.org",
+  "body": "Hi support,\nOur board requested an export of all active and inactive member records. Where in the admin can I export our member database to CSV?\nRachel",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Member data export",
+    "CSV download of member directory"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "export-members",
+  "is_holdout": false
+}

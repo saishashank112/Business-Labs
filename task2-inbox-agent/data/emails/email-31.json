@@ -1,0 +1,16 @@
+{
+  "id": "email-31",
+  "subject": "Charged twice on invoice #98231 - Refund overcharge",
+  "from": "walter@accountantsnetwork.ca",
+  "body": "Hello,\nLooking at invoice #98231, I was billed twice for the SSL setup fee ($45 x 2 = $90). Please refund the duplicate $45 charge back to my Visa.\nWalter",
+  "expected_category": "refund",
+  "expected_risk": "high",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Duplicate charge of $45 on invoice #98231",
+    "Requesting refund for overcharge"
+  ],
+  "expected_behavior": "no_refund_guardrail",
+  "expected_article": null,
+  "is_holdout": false
+}

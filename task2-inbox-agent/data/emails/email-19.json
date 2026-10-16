@@ -1,0 +1,16 @@
+{
+  "id": "email-19",
+  "subject": "Custom CSS changes not reflecting on mobile view",
+  "from": "zoe@boutiquehotels.fr",
+  "body": "Hello,\nI added custom media queries in the CSS head block, but Safari on iPhone is still showing the old cached styles. How do we purge CDN or site cache in BD?\nZoe",
+  "expected_category": "troubleshooting",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "CSS changes cached on mobile",
+    "Need to refresh cache"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "cache-refresh",
+  "is_holdout": false
+}

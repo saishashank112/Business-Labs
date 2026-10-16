@@ -1,0 +1,17 @@
+{
+  "id": "email-15",
+  "subject": "Members getting double charged upon recurring renewal",
+  "from": "hannah@yogastudiofinder.com",
+  "body": "URGENT PROBLEM:\nTwo of our premier tier members reported being charged twice this morning for their monthly $49 subscription. Our Stripe dashboard shows two successful charges 3 seconds apart. Why did this happen?\nHannah",
+  "expected_category": "troubleshooting",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Double billing reported by members",
+    "Two charges 3 seconds apart in Stripe",
+    "Requires human review and audit"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

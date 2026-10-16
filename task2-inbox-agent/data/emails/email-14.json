@@ -1,0 +1,16 @@
+{
+  "id": "email-14",
+  "subject": "Email forwarder not receiving verification code from Microsoft 365",
+  "from": "nina@financialplanners.co",
+  "body": "Hi support,\nWe configured an email forwarder from admin@financialplanners.co to our corporate Outlook 365. Test emails sent from external Gmail accounts never arrive, but internal tests do. Is SPF or DKIM blocking it?\nNina",
+  "expected_category": "troubleshooting",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Forwarder delivery failure to Outlook",
+    "Possible SPF/DKIM authentication issue"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558373-email-forwarders",
+  "is_holdout": false
+}

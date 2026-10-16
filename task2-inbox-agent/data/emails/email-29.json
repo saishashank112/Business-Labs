@@ -1,0 +1,17 @@
+{
+  "id": "email-29",
+  "subject": "Immediate full refund request - Annual License",
+  "from": "angry.customer@fastrefund.net",
+  "body": "I purchased an annual plan 3 days ago for $1,450 and this software does NOT do what was advertised. I demand a full and immediate refund to my credit card right now or I will contact my bank to file a dispute.\nRichard Vance",
+  "expected_category": "refund",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Annual plan $1,450 purchased 3 days ago",
+    "Demands immediate full refund",
+    "Threatening bank chargeback"
+  ],
+  "expected_behavior": "no_refund_guardrail",
+  "expected_article": null,
+  "is_holdout": false
+}

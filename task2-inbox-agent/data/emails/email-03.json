@@ -1,0 +1,16 @@
+{
+  "id": "email-03",
+  "subject": "How to import 1,200 categories via CSV?",
+  "from": "alex@tradeconnect.org",
+  "body": "Good morning,\nWe have an existing industry taxonomy with 1,200 parent and subcategories in an Excel sheet. Where do I upload the CSV file and what format is required?\nBest,\nAlex",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "1,200 categories to import",
+    "CSV format requirements"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558401-how-to-import-categories-via-csv-file",
+  "is_holdout": false
+}

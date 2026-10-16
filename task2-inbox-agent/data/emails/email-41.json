@@ -1,0 +1,17 @@
+{
+  "id": "email-41",
+  "subject": "Quote Request: Custom directory migration & design package",
+  "from": "emily@lawfirmsdirectory.com",
+  "body": "Hi there,\nWe would like a formal quote for: 1) Migration of 4,000 attorney profiles from Drupal, 2) Customizing the header and search widgets to match our corporate branding, and 3) 10 hours of staff training. What is your estimated cost and timeline?\nEmily Watson",
+  "expected_category": "quote",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Quote for Drupal migration (4,000 profiles)",
+    "Custom branding widgets",
+    "10 hours training"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

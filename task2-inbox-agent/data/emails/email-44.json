@@ -1,0 +1,15 @@
+{
+  "id": "email-44",
+  "subject": "Hourly consulting rate for ongoing technical maintenance",
+  "from": "jessica@healthpractitioners.us",
+  "body": "Good morning,\nDo you offer retainer packages or an hourly consulting rate for an AI technical consultant to assist us 15 hours per month with BD updates and integrations?\nJessica",
+  "expected_category": "quote",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Inquiring about 15hr/month technical retainer rate"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

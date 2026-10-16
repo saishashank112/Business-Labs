@@ -1,0 +1,16 @@
+{
+  "id": "email-21",
+  "subject": "Listing photos not uploading on mobile devices",
+  "from": "tiffany@eventplanners.net",
+  "body": "Hello,\nWhen vendors try to upload listing photos from their iPhones, the progress bar sticks at 100% and never completes. Android and desktop work fine. What could cause this?\nTiffany",
+  "expected_category": "troubleshooting",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "iPhone image upload stuck at 100%",
+    "HEIC format or iOS permission issue"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

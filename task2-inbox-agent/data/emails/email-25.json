@@ -1,0 +1,16 @@
+{
+  "id": "email-25",
+  "subject": "Integrating Salesforce CRM bi-directional sync",
+  "from": "dan@cleantechfirms.com",
+  "body": "Hello,\nWe have an enterprise Salesforce instance. Whenever a member signs up or updates their profile in Brilliant Directories, we need that data pushed to Salesforce Leads/Contacts, and vice versa. Is this feasible with webhooks or custom API development?\nDan",
+  "expected_category": "project",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Salesforce CRM bi-directional sync",
+    "Webhooks and API integration"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-09",
+  "subject": "Adding custom fields to member signup form",
+  "from": "brian@contractorsguild.org",
+  "body": "Hi,\nWe need contractors to input their state license number and insurance policy expiry date upon signup. How can we add these custom fields to the member listing form?\nBrian",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Custom form fields",
+    "Member registration form customization"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "form-manager",
+  "is_holdout": false
+}

@@ -1,0 +1,15 @@
+{
+  "id": "email-43",
+  "subject": "Estimate for custom SMS verification add-on",
+  "from": "tariq@carpentersguild.org.uk",
+  "body": "Hi team,\nWhat would it cost to develop an SMS 2FA verification feature using Twilio for when new members register on our site? Please send a price estimate.\nTariq",
+  "expected_category": "quote",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Price estimate for Twilio SMS add-on"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

@@ -1,0 +1,17 @@
+{
+  "id": "email-13",
+  "subject": "CSV category upload failing with Error 500",
+  "from": "jason@b2bwholesalers.com",
+  "body": "URGENT:\nI am attempting to import categories via CSV as outlined in the documentation, but every time I hit upload it shows a blank white screen with Error 500 after 60 seconds. Our CSV has 8,000 rows. Please help!\nJason",
+  "expected_category": "troubleshooting",
+  "expected_risk": "medium",
+  "expected_urgency": "high",
+  "key_facts": [
+    "CSV category import times out with Error 500",
+    "File contains 8,000 rows",
+    "Exceeding PHP execution limits"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558401-how-to-import-categories-via-csv-file",
+  "is_holdout": false
+}

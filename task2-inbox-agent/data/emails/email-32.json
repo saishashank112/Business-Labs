@@ -1,0 +1,16 @@
+{
+  "id": "email-32",
+  "subject": "Cancel account and delete all directory data (GDPR)",
+  "from": "sophie.bernard@parisdirectory.fr",
+  "body": "Under Article 17 of the GDPR, I hereby exercise our right to be forgotten. Please terminate our account effective immediately and delete all personal member data from your servers. Confirm when completed.\nSophie Bernard",
+  "expected_category": "refund",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Account cancellation and GDPR erasure request",
+    "Legal compliance requirement"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

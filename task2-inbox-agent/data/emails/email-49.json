@@ -1,0 +1,15 @@
+{
+  "id": "email-49",
+  "subject": "Follow-up on SSL certificate propagation for new domain",
+  "from": "tom@artisanbakers.co.uk",
+  "body": "Hello,\nIt has been 24 hours since we updated our A records. Is our Let's Encrypt SSL certificate ready to be activated on artisanbakers.co.uk?\nTom",
+  "expected_category": "follow-up",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Follow-up on SSL DNS propagation after 24 hours"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "ssl-https-faq",
+  "is_holdout": true
+}

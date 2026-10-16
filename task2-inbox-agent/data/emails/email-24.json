@@ -1,0 +1,17 @@
+{
+  "id": "email-24",
+  "subject": "Custom mobile app wrapper for Brilliant Directories website",
+  "from": "monica@realtornetwork.org",
+  "body": "Hi,\nWe want to launch native iOS and Android apps that wrap our Brilliant Directories portal with push notifications and biometric FaceID login. Do you provide custom app development services?\nMonica",
+  "expected_category": "project",
+  "expected_risk": "medium",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Native iOS/Android app wrapper",
+    "Push notifications and FaceID",
+    "New custom project request"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-36",
+  "subject": "Platform outage during our annual conference",
+  "from": "patricia@cybersecurityforum.io",
+  "body": "Yesterday during our keynote presentation, our member directory went down for 45 minutes in front of 3,000 attendees. This was totally unacceptable. We need an official root cause analysis and SLA credit explanation.\nPatricia",
+  "expected_category": "complaint",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "45 minute outage during major live event",
+    "Demands RCA and SLA credit"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

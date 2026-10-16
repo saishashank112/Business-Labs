@@ -1,0 +1,16 @@
+{
+  "id": "email-27",
+  "subject": "Automated PDF certificate generator upon course completion",
+  "from": "arthur@medicaleducation.org",
+  "body": "Hi,\nWe want members who finish viewing video modules on our BD site to automatically generate and download a personalized PDF completion certificate. Is this something you can develop?\nArthur",
+  "expected_category": "project",
+  "expected_risk": "medium",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Custom PDF generator",
+    "Member progress tracking"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

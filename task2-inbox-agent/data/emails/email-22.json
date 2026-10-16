@@ -1,0 +1,16 @@
+{
+  "id": "email-22",
+  "subject": "Google autocomplete showing 'This page can't load Google Maps correctly'",
+  "from": "vikram@commercialrealestate.ae",
+  "body": "Hi,\nOur homepage search box has a popup error saying 'This page can't load Google Maps correctly' with a watermarked map. We added our API key yesterday.\nVikram",
+  "expected_category": "troubleshooting",
+  "expected_risk": "medium",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Google Maps API quota or billing error",
+    "Watermarked map error on homepage"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "google-maps-setup",
+  "is_holdout": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "email-28",
+  "subject": "Migrating 25,000 listings from WordPress GeoDirectory to BD",
+  "from": "sam@localrestaurantsguide.com",
+  "body": "Hello,\nWe currently host 25,000 restaurant listings with reviews and multiple photos in WordPress GeoDirectory. We want to migrate everything to Brilliant Directories without losing SEO rankings or image links. Can you handle this migration project?\nSam",
+  "expected_category": "project",
+  "expected_risk": "high",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Large-scale data migration (25,000 listings)",
+    "SEO preservation and image handling"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

@@ -1,0 +1,17 @@
+{
+  "id": "email-35",
+  "subject": "OUTRAGEOUS SUPPORT DELAYS - 4 DAYS NO ANSWER",
+  "from": "angry_ceo@nationaltrades.org",
+  "body": "I have been waiting 4 full business days for ticket #40921 regarding our broken checkout. Our revenue is losing $2,000 every single day! Who is in charge over there? Call me immediately at 555-0199 or I will post this all over Twitter and Trustpilot.\nMark Stevens, CEO",
+  "expected_category": "complaint",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Severe delay on ticket #40921 (4 days)",
+    "Revenue loss reported",
+    "Threatening public negative reviews"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

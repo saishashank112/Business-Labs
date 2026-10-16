@@ -1,0 +1,16 @@
+{
+  "id": "email-37",
+  "subject": "Spam accounts flooding directory - Captcha not working",
+  "from": "george@ukplumbersdirect.co.uk",
+  "body": "Hi,\nWe have received over 400 spam Russian casino bot accounts in the past 24 hours. The Google reCAPTCHA on the signup form is clearly bypassed. Our directory looks compromised. Fix this immediately.\nGeorge",
+  "expected_category": "complaint",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "400 spam registrations in 24 hours",
+    "reCAPTCHA failure suspected"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

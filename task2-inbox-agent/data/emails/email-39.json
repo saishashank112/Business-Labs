@@ -1,0 +1,16 @@
+{
+  "id": "email-39",
+  "subject": "Admin panel keeps logging me out every 5 minutes",
+  "from": "brad@autodealersdirectory.com",
+  "body": "It is completely impossible to work when the admin panel logs me out and makes me enter 2FA every 5 minutes while I'm editing member profiles. Why does your session timeout keep breaking?\nBrad",
+  "expected_category": "complaint",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Admin session timeout issue",
+    "Forced logout every 5 minutes"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

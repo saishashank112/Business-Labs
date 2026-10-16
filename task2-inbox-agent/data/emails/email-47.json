@@ -1,0 +1,15 @@
+{
+  "id": "email-47",
+  "subject": "Following up on category CSV re-import confirmation",
+  "from": "clara@weddingplannersnetwork.com",
+  "body": "Hi again,\nJust checking in after your previous instructions on the CSV category format. We cleaned up our column headers as suggested. Should we perform the upload during low-traffic hours?\nClara",
+  "expected_category": "follow-up",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Follow-up regarding CSV import timing and best practices"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "5000558401-how-to-import-categories-via-csv-file",
+  "is_holdout": true
+}

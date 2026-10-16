@@ -1,0 +1,15 @@
+{
+  "id": "email-45",
+  "subject": "Cost breakdown for multi-language directory translation",
+  "from": "antoine@genevabusiness.ch",
+  "body": "Hello,\nWe need our directory to operate seamlessly in English, French, and German with automatic language switcher. Can you provide a quotation for setup and translation integration?\nAntoine",
+  "expected_category": "quote",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Quotation request for multi-language setup (EN/FR/DE)"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": true
+}

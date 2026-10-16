@@ -1,0 +1,16 @@
+{
+  "id": "email-10",
+  "subject": "Setting up Google Maps API key",
+  "from": "greg@legaladvisors.com",
+  "body": "Hello,\nThe location search autocomplete isn't loading city names on our homepage. Where do we paste our Google Maps JavaScript & Places API key?\nGreg",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Google Maps API key setup",
+    "Location autocomplete configuration"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "google-maps-setup",
+  "is_holdout": false
+}

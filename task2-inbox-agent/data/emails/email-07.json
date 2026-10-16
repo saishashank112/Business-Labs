@@ -1,0 +1,16 @@
+{
+  "id": "email-07",
+  "subject": "Enabling free SSL certificate on my custom domain",
+  "from": "tom@artisanbakers.co.uk",
+  "body": "Hi,\nMy domain has connected to BD nameservers, but visitors see a 'Not Secure' warning in Chrome. How do I enable the free SSL certificate?\nTom",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "SSL certificate activation",
+    "Not Secure warning on custom domain"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "ssl-https-faq",
+  "is_holdout": false
+}

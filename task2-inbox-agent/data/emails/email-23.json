@@ -1,0 +1,18 @@
+{
+  "id": "email-23",
+  "subject": "Project Request: Custom multi-vendor booking and calendar sync",
+  "from": "steve@wellnessretreats.com",
+  "body": "Hello AI Consultant,\nWe are looking to hire someone to build custom functionality into our Brilliant Directories platform. We need members to connect their Google Calendar and allow site visitors to book paid 1-hour sessions with automatic Stripe escrow payouts. Can your team scope and build this?\nSteve",
+  "expected_category": "project",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Custom booking system",
+    "Google Calendar integration",
+    "Stripe escrow payouts",
+    "Needs scoping and feasibility"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

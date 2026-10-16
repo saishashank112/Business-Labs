@@ -1,0 +1,16 @@
+{
+  "id": "email-08",
+  "subject": "How do I change the website logo and favicon?",
+  "from": "priya@architectsportal.in",
+  "body": "Dear Support,\nWhere in Settings can I upload our high-resolution SVG/PNG logo and update the browser favicon icon?\nPriya",
+  "expected_category": "how-to",
+  "expected_risk": "low",
+  "expected_urgency": "low",
+  "key_facts": [
+    "Logo upload",
+    "Favicon upload location"
+  ],
+  "expected_behavior": "draft_with_article",
+  "expected_article": "general-settings",
+  "is_holdout": false
+}

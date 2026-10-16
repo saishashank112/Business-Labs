@@ -1,0 +1,16 @@
+{
+  "id": "email-16",
+  "subject": "Website shows 'Database Connection Error' after updating general settings",
+  "from": "kevin@dentistsassociation.org",
+  "body": "Help!! Our entire live site is down showing 'Database Connection Error' right after we saved changes in General Settings. We have active traffic right now!\nKevin",
+  "expected_category": "troubleshooting",
+  "expected_risk": "high",
+  "expected_urgency": "high",
+  "key_facts": [
+    "Live site down with Database Connection Error",
+    "Occurred after saving settings"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}

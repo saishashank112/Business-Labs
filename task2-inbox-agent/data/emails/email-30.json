@@ -1,0 +1,16 @@
+{
+  "id": "email-30",
+  "subject": "Cancellation of VIP Add-on Package",
+  "from": "linda@eldercarefinder.org",
+  "body": "Hi Billing,\nPlease cancel our monthly VIP Add-on package ($99/mo) starting from the next billing cycle. We no longer need the automated lead routing feature. Please confirm cancellation.\nLinda",
+  "expected_category": "refund",
+  "expected_risk": "medium",
+  "expected_urgency": "medium",
+  "key_facts": [
+    "Cancel VIP Add-on ($99/mo)",
+    "Effective next billing cycle"
+  ],
+  "expected_behavior": "escalate",
+  "expected_article": null,
+  "is_holdout": false
+}
