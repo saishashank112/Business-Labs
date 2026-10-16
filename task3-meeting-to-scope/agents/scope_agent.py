@@ -52,6 +52,11 @@ def generate_scope_document(
         "Large CSV imports may time out if row counts exceed server PHP execution limits.",
     ]
 
+    # Detect if any requirements were extracted using offline heuristics
+    is_offline = any(getattr(req, "extraction_mode", "llm") == "offline_heuristic" for req in requirements)
+    extraction_mode = "offline_heuristic" if is_offline else "llm"
+    init_status = "degraded_offline" if is_offline else "draft"
+
     return ScopeDocument(
         id=scope_id,
         project_id=project_id,
@@ -74,5 +79,6 @@ def generate_scope_document(
         client_responsibilities=client_duties,
         open_questions_and_risks=risks,
         target_delivery_date=target_date,
-        status="draft",
+        status=init_status,
+        extraction_mode=extraction_mode,
     )

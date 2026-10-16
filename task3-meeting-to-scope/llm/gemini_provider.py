@@ -41,6 +41,32 @@ class GeminiProvider(LLMClient):
             config["response_mime_type"] = "application/json"
             config["response_schema"] = response_schema
 
+        # Check cache if enabled
+        cache_key = None
+        schema_name = response_schema.__name__ if response_schema else None
+        if getattr(settings, "llm_cache_enabled", True):
+            from llm.cache import compute_cache_key, get_cached_response, set_cached_response
+            cache_key = compute_cache_key(self.model_name, step, system_prompt, prompt, schema_name)
+            cached_data = await get_cached_response(cache_key)
+            if cached_data:
+                logger.info("Task 3 LLM cache hit for step '%s'", step)
+                parsed = None
+                if response_schema and cached_data.get("parsed"):
+                    try:
+                        parsed = response_schema.model_validate(cached_data["parsed"])
+                    except Exception:
+                        parsed = None
+                return LLMResponse(
+                    text=cached_data.get("text", ""),
+                    parsed=parsed,
+                    input_tokens=cached_data.get("input_tokens", 0),
+                    output_tokens=cached_data.get("output_tokens", 0),
+                    latency_ms=0,
+                    cost_usd=0.0,
+                    model=cached_data.get("model", self.model_name),
+                    provider="gemini",
+                )
+
         try:
             response = client.models.generate_content(
                 model=self.model_name,
@@ -75,6 +101,18 @@ class GeminiProvider(LLMClient):
                 latency_ms=latency_ms,
                 cost_usd=cost_usd,
             )
+
+            if cache_key and getattr(settings, "llm_cache_enabled", True):
+                from llm.cache import set_cached_response
+                resp_dict = {
+                    "text": text,
+                    "parsed": parsed.model_dump() if parsed and hasattr(parsed, "model_dump") else None,
+                    "input_tokens": input_tokens,
+                    "output_tokens": output_tokens,
+                    "model": self.model_name,
+                    "provider": "gemini",
+                }
+                await set_cached_response(cache_key, self.model_name, step, resp_dict)
 
             return LLMResponse(
                 text=text,

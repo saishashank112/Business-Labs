@@ -38,6 +38,16 @@ async def approve_scope(project_id: str, body: ApprovalRequest) -> dict:
         if not row:
             raise HTTPException(status_code=404, detail="Scope version not found")
 
+        if row["status"] == "degraded_offline" or json.loads(row["content"]).get("extraction_mode") == "offline_heuristic":
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Scope '{body.scope_version_id}' is marked as 'degraded_offline'. "
+                    "Degraded scopes cannot be approved as baselines for evals or demos. "
+                    "When a model is available, rebuild the baseline with the LLM."
+                ),
+            )
+
         scope_dict = json.loads(row["content"])
         now = datetime.now(timezone.utc).isoformat()
 
@@ -86,7 +96,15 @@ async def compare_follow_up(project_id: str, body: CompareRequest) -> dict:
         if not scope_row:
             raise HTTPException(status_code=404, detail="Baseline scope not found")
 
-        # 2. Strict PRD Gate: Baseline MUST be approved!
+        # 2. Strict PRD Gate: Baseline MUST be approved and not degraded!
+        if scope_row["status"] == "degraded_offline":
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Baseline scope '{body.baseline_scope_id}' is marked as 'degraded_offline'. "
+                    "Degraded scopes cannot be used for evals or demo diffing. Rebuild with LLM."
+                ),
+            )
         if scope_row["status"] != "approved":
             raise HTTPException(
                 status_code=400,
@@ -176,6 +194,7 @@ async def compare_follow_up(project_id: str, body: CompareRequest) -> dict:
 
         return {
             "success": True,
+            "extraction_mode": diff_report.extraction_mode,
             "diff_report": diff_report.model_dump(),
             "revised_scope": revised_scope.model_dump(),
             "revised_estimate": revised_estimate.model_dump(),

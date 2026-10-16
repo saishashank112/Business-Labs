@@ -25,6 +25,10 @@ def get_transcripts_dir() -> Path:
     return Path(__file__).parent.parent.parent / "transcripts"
 
 
+def get_user_transcripts_dir() -> Path:
+    return Path(__file__).parent.parent.parent / "transcripts_user"
+
+
 @router.get("")
 async def list_transcripts() -> list[dict]:
     tdir = get_transcripts_dir()
@@ -42,16 +46,58 @@ async def list_transcripts() -> list[dict]:
                     "is_follow_up": data.get("is_follow_up", False),
                     "client_name": data.get("client_name"),
                     "turns_count": len(data.get("dialogue", [])),
+                    "is_user_transcript": False,
                 })
             except Exception:
                 pass
-    return sorted(results, key=lambda x: x.get("label", ""))
+
+    udir = get_user_transcripts_dir()
+    if udir.exists():
+        from agents.transcript_analyst import parse_transcript_text
+        for f in sorted(udir.glob("*.txt")):
+            try:
+                content = f.read_text(encoding="utf-8")
+                dialogue = parse_transcript_text(content)
+                clean_name = f.stem.replace("_", " ").title()
+                results.append({
+                    "id": f.stem,
+                    "project_id": f"proj_{f.stem}",
+                    "project_name": clean_name,
+                    "label": f"User: {clean_name}",
+                    "meeting_date": "2026-10-16",
+                    "is_follow_up": False,
+                    "client_name": "User Upload",
+                    "turns_count": len(dialogue),
+                    "is_user_transcript": True,
+                })
+            except Exception:
+                pass
+
+    return sorted(results, key=lambda x: str(x.get("label", "")))
 
 
 @router.get("/{transcript_id}")
 async def get_transcript(transcript_id: str) -> dict:
     tdir = get_transcripts_dir()
     fpath = tdir / f"{transcript_id}.json"
-    if not fpath.exists():
-        raise HTTPException(status_code=404, detail="Transcript not found")
-    return json.loads(fpath.read_text(encoding="utf-8"))
+    if fpath.exists():
+        return json.loads(fpath.read_text(encoding="utf-8"))
+
+    udir = get_user_transcripts_dir()
+    ufpath = udir / f"{transcript_id}.txt"
+    if ufpath.exists():
+        from agents.transcript_analyst import parse_transcript_text
+        dialogue = parse_transcript_text(ufpath.read_text(encoding="utf-8"))
+        clean_name = transcript_id.replace("_", " ").title()
+        return {
+            "id": transcript_id,
+            "project_id": f"proj_{transcript_id}",
+            "project_name": clean_name,
+            "label": f"User: {clean_name}",
+            "meeting_date": "2026-10-16",
+            "is_follow_up": False,
+            "client_name": "User Upload",
+            "dialogue": dialogue,
+        }
+
+    raise HTTPException(status_code=404, detail="Transcript not found")

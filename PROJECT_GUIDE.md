@@ -91,10 +91,11 @@ If you prefer to start each service in separate terminal windows:
 - **Swagger Documentation:** [http://localhost:8002/docs](http://localhost:8002/docs)
 - **Role:** Multi-agent pipeline converting kickoff meeting transcripts into engineering scopes and proposals.
 - **Key Endpoints:**
-  - `POST /api/transcripts/{id}/analyze`: Runs staged dialogue analysis and extracts requirements.
-  - `POST /api/transcripts/{id}/draft-scope`: Checks platform feasibility via Task 1 HTTP API and drafts a 10-section Scope of Work.
-  - `POST /api/scopes/{id}/approve`: Gates sending by approving a baseline scope version.
-  - `POST /api/scopes/{id}/diff`: Diffs a follow-up transcript against an approved baseline.
+  - `GET /api/transcripts`: List all available meeting transcripts.
+  - `POST /api/transcripts/{transcript_id}/analyze`: Runs staged dialogue analysis, extracts requirements, checks feasibility with Task 1, and drafts SOW, estimate, and proposal.
+  - `POST /api/projects/{project_id}/approve`: Gates sending by approving a baseline scope version (Body: `{"scope_version_id": "...", "reviewer": "..."}`).
+  - `POST /api/projects/{project_id}/compare`: Diffs a follow-up transcript against an approved baseline (Body: `{"baseline_scope_id": "...", "follow_up_transcript_id": "transcript_c"}`).
+  - `GET /health`: Health and database connectivity check.
 
 ### 5. Task 3 UI — `http://localhost:8502`
 - **Role:** Technical sales consultant workspace.
@@ -136,15 +137,17 @@ Follow these steps for a live review, demo, or grading walkthrough:
 ### Step 2: Explore Task 2 (Inbox Agent)
 1. Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 2. Look at the left sidebar containing the **50 inbound emails**.
-3. Click on **`email-01`** (a standard `how-to` question about email forwarders).
+3. Click on **`email-01`** (Sarah Jenkins asking about mass email campaigns):
    - Click **Run Pipeline (Classify + Draft)**.
-   - Notice that the agent queries Task 1 via HTTP, retrieves the article citations, and writes a polite, cited draft.
-4. Click on **`email-15`** (a high-risk refund request).
+   - Notice that the agent queries Task 1 via HTTP, retrieves the article citations (`5000558357`), and writes a polite draft addressed to "Hi Sarah,".
+4. Click on **`email-02`** (David Cooper asking about email forwarders):
+   - Notice that the draft addresses "Hi David," and in-flight requests from `email-01` are cleanly cancelled without race conditions.
+5. Click on **`email-15`** (Hannah reporting members getting double charged upon renewal):
    - **Observe Guardrail Safety:**
-     - The risk level is flagged as `high`.
+     - The category is `troubleshooting` and risk level is flagged as `high`.
      - The guardrail engine blocks automatic sending (`auto_send_allowed: false`).
      - `needs_human_approval` is set to `true`.
-5. Test the **Feedback & Auto-Send Counter:**
+6. Test the **Feedback & Auto-Send Counter:**
    - Make a text edit in the draft box.
    - Click **Edit & Send**.
    - Notice that the consecutive unchanged counter resets to 0 and the human edit is stored in the SQLite audit log.
@@ -156,7 +159,7 @@ Follow these steps for a live review, demo, or grading walkthrough:
 2. **Phase 1: Initial Kickoff (Transcript A)**
    - Select **Transcript A (Initial Kickoff Meeting)** from the dropdown.
    - Click **Run Staged Analysis**.
-   - Review the extracted requirements and feasibility classifications (Stripe, categories, SSL).
+   - Review the extracted requirements and feasibility classifications (CSV category taxonomy, email lead routing, legal newsletter, Google Maps, staff training). *Note: Stripe billing and SSL belong to Transcript B (Artisan Bakers), not Transcript A.*
    - Click **Generate Scope & Estimate**.
    - Review the 10-section SOW, the hours estimation (e.g., 40h), and the executive proposal.
    - Click **Approve Baseline Scope (v1)**. *(This locks the contract baseline)*.
@@ -164,11 +167,16 @@ Follow these steps for a live review, demo, or grading walkthrough:
    - Select **Transcript C (Follow-Up Meeting with Changes)** from the dropdown.
    - Notice that Transcript C explicitly adds Twilio SMS 2FA, removes the mass email newsletter setup, and pushes delivery from Nov 15 to Dec 5.
    - Click **Compare Against Approved Baseline v1**.
-4. **Observe the Scope Diff Report:**
-   - **Added:** `req-c-1: Twilio SMS 2FA integration`
-   - **Removed:** `req-3: Mass email campaign setup (Client requested removal)`
-   - **Timeline Shift:** Moved from `2026-11-15` to `2026-12-05` (+20 days)
-   - **Net Effort & Cost Delta:** Automatically recalculated without manual spreadsheet editing.
+4. **Observe the Scope Diff Report (`diff_report`):**
+   - **`added_requirements`:** Includes `req-transcript_c-1: SMS two-factor verification requirement using Twilio`
+   - **`removed_requirements`:** Includes `req-transcript_a-3: Third, we want to broadcast a monthly legal newsletter... (Client requested removal in transcript_c)`
+   - **`modified_requirements`:** `[]`
+   - **`out_of_scope_items`:** `[]`
+   - **`timeline_delta`:** `"Shifted from 2026-11-15 to 2026-12-05 (+20 days)"`
+   - **`hours_delta`:** `+6.0` hours (recalculated likely hours)
+   - **`cost_delta`:** `+$900.00` USD
+   - **`summary`:** Formatted change summary markdown
+   - **`revised_scope`** & **`revised_estimate`**: Automatically updated contract version 2.
 
 ---
 

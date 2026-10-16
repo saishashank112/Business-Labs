@@ -17,6 +17,9 @@ class Requirement(BaseModel):
     # existing_config | existing_feature_with_limitation | potential_custom | needs_clarification
     feasibility_detail: str = ""
     existing_solution: Optional[str] = None
+    statement_type: str = "requirement_change"
+    # requirement_change | decision | timeline_change | confirmation_or_chatter
+    extraction_mode: str = "llm"  # llm | offline_heuristic
     acceptance_criteria: Optional[str] = None
     dependencies: list[str] = []
     estimate_status: str = "pending"
@@ -67,9 +70,10 @@ class ScopeDocument(BaseModel):
     client_responsibilities: list[str] = []
     open_questions_and_risks: list[str] = []
     target_delivery_date: str = "TBD"
-    status: str = "draft"  # draft | approved | superseded
+    status: str = "draft"  # draft | approved | superseded | degraded_offline
     approved_by: Optional[str] = None
     approved_at: Optional[str] = None
+    extraction_mode: str = "llm"  # llm | offline_heuristic
 
 
 class ProposalDocument(BaseModel):
@@ -100,9 +104,12 @@ class ScopeDiffReport(BaseModel):
     added_requirements: list[str] = []
     modified_requirements: list[str] = []
     removed_requirements: list[str] = []
+    unchanged_requirements: list[str] = []
+    not_a_requirement_items: list[str] = []
     out_of_scope_items: list[str] = []
     conflicts: list[str] = []
     timeline_delta: str = ""
     hours_delta: float = 0.0
     cost_delta: float = 0.0
     summary: str
+    extraction_mode: str = "llm"  # llm | offline_heuristic

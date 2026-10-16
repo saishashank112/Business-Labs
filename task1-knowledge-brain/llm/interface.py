@@ -23,6 +23,15 @@ class LLMResponse(BaseModel):
     provider: str
 
 
+class LLMError(Exception):
+    """Structured LLM exception with standard error code."""
+    def __init__(self, code: str, message: str, original: Optional[Exception] = None):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.original = original
+
+
 class LLMClient(ABC):
     """Abstract base class for all LLM providers."""
 

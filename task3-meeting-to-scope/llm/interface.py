@@ -5,6 +5,16 @@ from typing import Any, Optional, Type
 from pydantic import BaseModel
 
 
+class LLMError(Exception):
+    """Standardized typed LLM error with error code."""
+
+    def __init__(self, code: str, message: str, original: Optional[Exception] = None):
+        self.code = code
+        self.message = message
+        self.original = original
+        super().__init__(f"[{code}] {message}")
+
+
 class LLMResponse(BaseModel):
     text: str
     parsed: Optional[Any] = None

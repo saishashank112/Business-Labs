@@ -4,6 +4,7 @@ export interface KnowledgeResponse {
   success: boolean;
   answer: string;
   status: "answered" | "insufficient_evidence" | "unavailable" | "error";
+  error_code?: "QUOTA_EXHAUSTED" | "RATE_LIMITED" | "LLM_UNAVAILABLE" | "TIMEOUT" | "INVALID_OUTPUT" | "INTERNAL_ERROR" | null;
   sources: SourceRef[];
   images: Array<{ url: string; description: string; article_url: string }>;
   needs_human: boolean;
@@ -54,6 +55,7 @@ export class KnowledgeBrainClient {
           success: false,
           answer: "Knowledge service unavailable. (HTTP error)",
           status: "unavailable",
+          error_code: response.status === 429 ? "RATE_LIMITED" : response.status === 503 ? "LLM_UNAVAILABLE" : "INTERNAL_ERROR",
           sources: [],
           images: [],
           needs_human: true,
@@ -66,6 +68,7 @@ export class KnowledgeBrainClient {
         success: true,
         answer: data.answer || "",
         status: data.status || "answered",
+        error_code: data.error_code || null,
         sources: (data.sources || []).map((s: any) => ({
           title: s.title || "",
           url: s.url || "",
@@ -83,6 +86,7 @@ export class KnowledgeBrainClient {
         success: false,
         answer: "Knowledge service unavailable.",
         status: "unavailable",
+        error_code: isTimeout ? "TIMEOUT" : "LLM_UNAVAILABLE",
         sources: [],
         images: [],
         needs_human: true,

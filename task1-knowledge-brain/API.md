@@ -23,7 +23,7 @@ The **Knowledge Brain** is an AI-powered technical consultation service for the 
 
 ### 1. Health Check
 
-Verifies server liveness, database connectivity, and uptime.
+Verifies server liveness, database connectivity, configured LLM model availability, and uptime.
 
 - **Method:** `GET`
 - **Path:** `/health`
@@ -39,6 +39,9 @@ curl -X GET http://localhost:8001/health
 {
   "status": "ok",
   "db": "connected",
+  "model": "gemini-2.5-flash",
+  "model_status": "available",
+  "fallback_model": "gemini-flash-latest",
   "uptime_seconds": 3600.5
 }
 ```
@@ -47,7 +50,7 @@ curl -X GET http://localhost:8001/health
 
 ### 2. Query Knowledge Base
 
-Answers a user query using hybrid retrieval and RAG. Enforces strict evidence grounding, inline markdown citations, and automatic escalation when documentation is insufficient.
+Answers a user query using hybrid retrieval and RAG. Enforces strict evidence grounding, inline markdown citations, and automatic escalation when documentation is insufficient or when model errors occur.
 
 - **Method:** `POST`
 - **Path:** `/query`
@@ -60,22 +63,24 @@ Answers a user query using hybrid retrieval and RAG. Enforces strict evidence gr
 | `context` | string | No | Optional additional caller context. |
 | `mode` | string | No | Retrieval mode: `hybrid` (default), `vector`, or `keyword`. |
 
-#### Example Request
-```bash
-curl -X POST http://localhost:8001/query \
-  -H "X-API-Key: change-me-in-production" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "question": "Can I send a mass email campaign using Brilliant Directories?",
-    "mode": "hybrid"
-  }'
-```
+#### Response Schema
+| Field | Type | Description |
+|---|---|---|
+| `answer` | string | Grounded markdown answer or error explanation. |
+| `status` | string | `answered`, `insufficient_evidence`, or `error`. |
+| `error_code` | string \| null | Standard error code when `status="error"`: `QUOTA_EXHAUSTED`, `RATE_LIMITED`, `LLM_UNAVAILABLE`, `TIMEOUT`, `INVALID_OUTPUT`, `INTERNAL_ERROR`. |
+| `sources` | array | List of cited documentation sources (`title`, `url`, `relevance`). |
+| `images` | array | List of image references. |
+| `needs_human` | boolean | Flag indicating human review is needed (true on error and insufficient_evidence). |
+| `escalation_id` | string \| null | UUID of human escalation record in database (only created for `insufficient_evidence`; null for infrastructure errors). |
+| `request_id` | string | Tracing request ID (all errors are logged with this request ID). |
 
-#### Example Response (200 OK)
+#### Example Response: Success (200 OK, answered)
 ```json
 {
   "answer": "Brilliant Directories includes an internal email marketing tool designed for newsletters and member updates. However, for massive email campaigns exceeding server delivery limits, the platform recommends integrating third-party email services such as Mailchimp or SendGrid. See [Can I Send A Mass Email Campaign Using Brilliant Directories?](https://support.brilliantdirectories.com/support/solutions/articles/5000558357-can-i-send-a-mass-email-campaign-using-brilliant-directories-).",
   "status": "answered",
+  "error_code": null,
   "sources": [
     {
       "title": "Can I Send A Mass Email Campaign Using Brilliant Directories?",
@@ -87,6 +92,21 @@ curl -X POST http://localhost:8001/query \
   "needs_human": false,
   "escalation_id": null,
   "request_id": "8a7d18bc-1ef2-48a0-97ec-0322cbbbb8fa"
+}
+```
+
+#### Example Response: Error / Downstream Failure (200 OK, error)
+> Infrastructure errors are logged with `request_id` but do NOT create escalation tickets.
+```json
+{
+  "answer": "Knowledge service error: Configured model returned 404 NOT_FOUND",
+  "status": "error",
+  "error_code": "LLM_UNAVAILABLE",
+  "sources": [],
+  "images": [],
+  "needs_human": true,
+  "escalation_id": null,
+  "request_id": "9c1182ef-6644-42b3-96b6-eef904baef87"
 }
 ```
 

@@ -1,0 +1,222 @@
+{
+  "sample_size": 20,
+  "total_articles_in_sitemap": 1537,
+  "total_raw_imgs_in_sample": 87,
+  "avg_raw_imgs_per_article": 4.35,
+  "extrapolated_raw_images": 6685,
+  "total_content_imgs_in_sample": 67,
+  "avg_content_imgs_per_article": 3.35,
+  "extrapolated_content_images": 5148,
+  "unique_content_urls_in_sample": 48,
+  "dedup_ratio": 0.716,
+  "estimated_unique_content_images": 3688,
+  "articles": [
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000106673-11-14-2025-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000106673-11-14-2025-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000033182-07-28-17-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000033182-07-28-17-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/5000682660-installing-google-analytics-tracking-code-easy-method-",
+      "status_code": 200,
+      "raw_img_count": 8,
+      "content_img_count": 7,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12159694554/original/Kqa5FBTiG7F4NnBh0OHY3FevVSHycSJb3Q.png?1744235543",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12127280769/original/-gw4OFb-FE-iDTSTZi3YeO9OdDO9RISC2w.png?1687397238",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12127281374/original/b5FFBvStWs39BzqnpwiT2kUYJBezmv9YlA.png?1687399568"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000109533-brilliant-directories-mobile-app-manage-your-website-from-anywhere",
+      "status_code": 200,
+      "raw_img_count": 15,
+      "content_img_count": 14,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12184099775/original/uIacHhlemV94drw4-M_yqCAFfq2cyJGV5Q.png?1787594475",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12184099757/original/M76pqZBBh59BMqMWykA2BM3ijhTY5WSjOA.png?1787594453",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12184099754/original/4yQtXpAOLbv8JACqLtcnCE6QI2yTNl-64Q.png?1787594449"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000068771-03-20-20-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000068771-03-20-20-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000060277-08-09-19-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000060277-08-09-19-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000056216-04-05-19-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000056216-04-05-19-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000040712-02-02-18-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000040712-02-02-18-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000109288-07-24-2026-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000109288-07-24-2026-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000030822-10gb-of-additional-bandwidth-storage-boost",
+      "status_code": 200,
+      "raw_img_count": 4,
+      "content_img_count": 3,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12174858781/original/B6ub8O4xxmEiSwZ3XlSdIlJRf3naShR4UA.png?1771428326",
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000030822-10gb-of-additional-bandwidth-storage-boost/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000108098-api-reference-email-lists",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000108098-api-reference-email-lists/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000109488-enhanced-hosting-bundle",
+      "status_code": 200,
+      "raw_img_count": 5,
+      "content_img_count": 4,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12183886487/original/j67PenjbSq02F9YTQdqMzt98qMsF2CSiog.png?1787180760",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12183886489/original/iyDDkDQQalfu1N5zUNB6tgNxf2ZNKC_BhA.png?1787180769",
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000099791-add-a-bot-to-the-robots-txt-file-ahrefs-example-",
+      "status_code": 200,
+      "raw_img_count": 4,
+      "content_img_count": 3,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12143087681/original/YHig6LDjnMelLMI-YLVtl7TuXxmQUiCxWw.png?1715393863",
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000099791-add-a-bot-to-the-robots-txt-file-ahrefs-example-/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000022881-understanding-seo-variables",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000022881-understanding-seo-variables/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000102546-unsubscribe-api-unsubscribe-members-from-email-campaigns",
+      "status_code": 200,
+      "raw_img_count": 7,
+      "content_img_count": 6,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12153441046/original/8VLfTwZxT-HzLmai2s6nQ5mwFAIztAqs-w.png?1733245379",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12153281497/original/V0AtYvHgJfU8_HPz889uz2sAqwBhGm6aeQ.png?1732902133",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12153282756/original/d2k0qmomodW8VA6S5Issx9ba7aiywiu2Jw.png?1732903961"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000090827-11-11-22-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000090827-11-11-22-software-updates/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/5000690565-developer-hub-cpanel-dashboard-zone-editor-a-records-cname-txt-and-more-",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/5000690565-developer-hub-cpanel-dashboard-zone-editor-a-records-cname-txt-and-more-/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/5000686298-common-variable-list",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/5000686298-common-variable-list/hit"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000027134-turning-off-auto-pluralization-for-seo-templates-adding-an-extra-s-",
+      "status_code": 200,
+      "raw_img_count": 5,
+      "content_img_count": 4,
+      "content_images": [
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12184799928/original/Qz2StWghxvI1dNhQfZduV9Xj2AxGT-cM6Q.png?1788783894",
+        "https://s3.amazonaws.com/cdn.freshdesk.com/data/helpdesk/attachments/production/12184799953/original/FSFNQcFaqtjrH24wUknadD3fScPykW_xKA.png?1788783930",
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg"
+      ]
+    },
+    {
+      "url": "https://support.brilliantdirectories.com/support/solutions/articles/12000055194-03-01-19-software-updates",
+      "status_code": 200,
+      "raw_img_count": 3,
+      "content_img_count": 2,
+      "content_images": [
+        "https://www.brilliantdirectories.com/wp-content/uploads/2016/11/marketplacebannertest6.jpg",
+        "https://support.brilliantdirectories.com/support/solutions/articles/12000055194-03-01-19-software-updates/hit"
+      ]
+    }
+  ]
+}

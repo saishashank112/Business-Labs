@@ -57,6 +57,9 @@ export default function InboxReviewPage() {
   const [reviewMessage, setReviewMessage] = useState<string | null>(null);
   const [autoSendRules, setAutoSendRules] = useState<any[]>([]);
 
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+  const activeEmailIdRef = React.useRef<string | null>(null);
+
   // Load emails and auto-send rules on mount
   useEffect(() => {
     fetch("/api/emails")
@@ -79,14 +82,42 @@ export default function InboxReviewPage() {
       .catch(console.error);
   };
 
-  // When selected email changes, run or reset pipeline
+  // When selected email changes, abort in-flight request, clear per-email state, and run pipeline
   useEffect(() => {
-    if (selectedEmail) {
-      handleRunPipeline(selectedEmail);
+    // 1. Cancel previous in-flight request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
     }
+
+    if (!selectedEmail) {
+      activeEmailIdRef.current = null;
+      setPipelineData(null);
+      setDraftText("");
+      setCorrectionReason("");
+      setReviewMessage(null);
+      return;
+    }
+
+    // 2. Immediately clear previous email state
+    activeEmailIdRef.current = selectedEmail.id;
+    setPipelineData(null);
+    setDraftText("");
+    setCorrectionReason("");
+    setReviewMessage(null);
+
+    // 3. Create fresh AbortController for this email
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    handleRunPipeline(selectedEmail, controller);
+
+    return () => {
+      controller.abort();
+    };
   }, [selectedEmail?.id]);
 
-  const handleRunPipeline = async (email: EmailItem) => {
+  const handleRunPipeline = async (email: EmailItem, controller: AbortController) => {
     setLoading(true);
     setReviewMessage(null);
     try {
@@ -94,16 +125,24 @@ export default function InboxReviewPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(email),
+        signal: controller.signal,
       });
       const data = await res.json();
-      if (res.ok) {
+      // Guard against race conditions: only update if not aborted and email matches current selection
+      if (!controller.signal.aborted && activeEmailIdRef.current === email.id && res.ok) {
         setPipelineData(data);
         setDraftText(data.draft?.suggested_reply || "");
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        // Request was aborted due to switching emails — cleanly ignore
+        return;
+      }
       console.error(err);
     } finally {
-      setLoading(false);
+      if (activeEmailIdRef.current === email.id) {
+        setLoading(false);
+      }
     }
   };
 
@@ -318,7 +357,25 @@ export default function InboxReviewPage() {
         {/* Center / Right Column: Review Workspace */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto", padding: "1.5rem" }}>
           {selectedEmail ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem", maxWidth: "1100px" }}>
+            <div key={selectedEmail.id} style={{ display: "flex", flexDirection: "column", gap: "1.2rem", maxWidth: "1100px" }}>
+              {loading && (
+                <div
+                  style={{
+                    padding: "0.75rem 1rem",
+                    borderRadius: "8px",
+                    background: "#3b82f615",
+                    border: "1px solid #3b82f644",
+                    color: "#93c5fd",
+                    fontSize: "0.85rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span>⏳</span>
+                  <span>Loading classification, Task 1 evidence, and draft for <strong>{selectedEmail.id}</strong>...</span>
+                </div>
+              )}
               {/* Review Alert message */}
               {reviewMessage && (
                 <div
@@ -433,10 +490,53 @@ export default function InboxReviewPage() {
                     <div style={{ fontSize: "0.85rem" }}>
                       <div style={{ marginBottom: "0.4rem" }}>
                         <strong>Status:</strong>{" "}
-                        <span style={{ color: pipelineData.knowledge.status === "answered" ? "#10b981" : "#f59e0b" }}>
+                        <span
+                          style={{
+                            color:
+                              pipelineData.knowledge.status === "answered"
+                                ? "#10b981"
+                                : pipelineData.knowledge.status === "error"
+                                ? "#ef4444"
+                                : "#f59e0b",
+                            fontWeight: 600,
+                            textTransform: "uppercase",
+                          }}
+                        >
                           {pipelineData.knowledge.status}
                         </span>
                       </div>
+                      {pipelineData.knowledge.status === "error" && (
+                        <div
+                          data-testid="knowledge-error-card"
+                          style={{
+                            padding: "0.5rem 0.75rem",
+                            borderRadius: "6px",
+                            background: "#ef444422",
+                            border: "1px solid #ef444466",
+                            color: "#fca5a5",
+                            marginBottom: "0.5rem",
+                            fontSize: "0.8rem",
+                          }}
+                        >
+                          ⚠️ <strong>Knowledge Service Unavailable:</strong> Technical documentation lookup failed. No automated instructions generated.
+                        </div>
+                      )}
+                      {pipelineData.knowledge.status === "insufficient_evidence" && (
+                        <div
+                          data-testid="knowledge-insufficient-card"
+                          style={{
+                            padding: "0.5rem 0.75rem",
+                            borderRadius: "6px",
+                            background: "#f59e0b22",
+                            border: "1px solid #f59e0b66",
+                            color: "#fcd34d",
+                            marginBottom: "0.5rem",
+                            fontSize: "0.8rem",
+                          }}
+                        >
+                          🔍 <strong>Insufficient Evidence:</strong> Solution Center lacks verified platform documentation. Flagged for human specialist.
+                        </div>
+                      )}
                       <p style={{ color: "var(--text-secondary)", maxHeight: "100px", overflowY: "auto", fontSize: "0.8rem", lineHeight: 1.4 }}>
                         {pipelineData.knowledge.answer}
                       </p>

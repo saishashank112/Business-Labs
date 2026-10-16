@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     """Central config for the Knowledge Brain service."""
 
     # ── API authentication ──────────────────────────────────
-    t1_api_key: str = "change-me-in-production"
+    t1_api_key: str = ""
 
     # ── Database paths ──────────────────────────────────────
     t1_db_path: str = "task1.db"
@@ -35,13 +35,23 @@ class Settings(BaseSettings):
     t1_port: int = 8001
 
     # ── Model names (never hard-coded; set in .env) ─────────
-    t1_rag_model: str = "gemini-3.8-flash"
-    t1_image_model: str = "gemini-3.8-flash"
+    t1_rag_model: str = "gemini-2.5-flash"
+    t1_fallback_model: str = "gemini-flash-latest"
+    t1_image_model: str = "gemini-2.5-flash"
     t1_embed_model: str = "all-MiniLM-L6-v2"
 
     # ── LLM API keys ───────────────────────────────────────
     gemini_api_key: str = ""
     claude_api_key: str = ""
+    anthropic_api_key: str = ""
+
+    # ── Claude Models & Grader ─────────────────────────────
+    claude_model_fast: str = ""
+    claude_model_strong: str = ""
+    grader_model: str = "gemini-2.5-flash-lite"
+
+    # ── LLM Response Cache ─────────────────────────────────
+    llm_cache_enabled: bool = True
 
     # ── Profile ─────────────────────────────────────────────
     profile: str = "dev"

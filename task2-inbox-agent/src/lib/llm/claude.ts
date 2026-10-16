@@ -6,8 +6,8 @@ export class ClaudeProvider implements LLMClient {
   private apiKey: string;
 
   constructor(modelName?: string, apiKey?: string) {
-    this.modelName = modelName || "claude-3-5-sonnet-20241022";
-    this.apiKey = apiKey || process.env.CLAUDE_API_KEY || "";
+    this.modelName = modelName || process.env.T2_CLAUDE_MODEL || "claude-haiku-placeholder";
+    this.apiKey = apiKey || process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || "";
   }
 
   async generate(
@@ -16,43 +16,78 @@ export class ClaudeProvider implements LLMClient {
     requestId?: string,
     step: string = "generate",
   ): Promise<LLMResponse> {
+    // Check response cache if enabled
+    const { computeCacheKey, getCachedResponse, setCachedResponse } = await import("./cache");
+    const cacheKey = computeCacheKey(this.modelName, step, systemPrompt || "", prompt);
+    const cached = getCachedResponse(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     if (!this.apiKey) {
-      throw new Error("CLAUDE_API_KEY is not set in environment.");
+      const err: any = new Error("ANTHROPIC_API_KEY is not set in environment.");
+      err.code = "LLM_UNAVAILABLE";
+      throw err;
     }
 
     const startTime = Date.now();
-    const Anthropic = (await import("@anthropic-ai/sdk")).default;
-    const client = new Anthropic({ apiKey: this.apiKey });
 
-    const response = await client.messages.create({
-      model: this.modelName,
-      max_tokens: 4096,
-      system: systemPrompt,
-      messages: [{ role: "user", content: prompt }],
-    });
+    try {
+      const Anthropic = (await import("@anthropic-ai/sdk")).default;
+      const client = new Anthropic({ apiKey: this.apiKey });
 
-    const latencyMs = Date.now() - startTime;
-    let text = "";
-    for (const block of response.content) {
-      if (block.type === "text") {
-        text += block.text;
+      const response = await client.messages.create({
+        model: this.modelName,
+        max_tokens: 4096,
+        system: systemPrompt,
+        messages: [{ role: "user", content: prompt }],
+      });
+
+      const latencyMs = Date.now() - startTime;
+      let text = "";
+      for (const block of response.content) {
+        if (block.type === "text") {
+          text += block.text;
+        }
       }
+
+      const inputTokens = response.usage.input_tokens || 0;
+      const outputTokens = response.usage.output_tokens || 0;
+      const costUsd = (inputTokens / 1_000_000) * 0.25 + (outputTokens / 1_000_000) * 1.25;
+
+      const result: LLMResponse = {
+        text,
+        inputTokens,
+        outputTokens,
+        latencyMs,
+        costUsd,
+        model: this.modelName,
+        provider: "claude",
+      };
+
+      setCachedResponse(cacheKey, this.modelName, step, result);
+      logLlmCall(requestId, step, this.modelName, "claude", inputTokens, outputTokens, latencyMs, costUsd);
+
+      return result;
+    } catch (err: any) {
+      const errMsg = (err.message || String(err)).toLowerCase();
+      const mappedErr: any = new Error(err.message || "Claude generation failed");
+
+      if (errMsg.includes("rate_limit") || errMsg.includes("429")) {
+        mappedErr.code = (errMsg.includes("credit") || errMsg.includes("quota") || errMsg.includes("balance") || errMsg.includes("perday"))
+          ? "QUOTA_EXHAUSTED"
+          : "RATE_LIMITED";
+      } else if (errMsg.includes("overloaded") || errMsg.includes("529") || errMsg.includes("503") || errMsg.includes("unavailable")) {
+        mappedErr.code = "LLM_UNAVAILABLE";
+      } else if (errMsg.includes("timeout") || errMsg.includes("connection")) {
+        mappedErr.code = "TIMEOUT";
+      } else if (errMsg.includes("invalid json")) {
+        mappedErr.code = "INVALID_OUTPUT";
+      } else {
+        mappedErr.code = err.code || "INTERNAL_ERROR";
+      }
+
+      throw mappedErr;
     }
-
-    const inputTokens = response.usage.input_tokens || 0;
-    const outputTokens = response.usage.output_tokens || 0;
-    const costUsd = (inputTokens / 1_000_000) * 3.0 + (outputTokens / 1_000_000) * 15.0;
-
-    logLlmCall(requestId, step, this.modelName, "claude", inputTokens, outputTokens, latencyMs, costUsd);
-
-    return {
-      text,
-      inputTokens,
-      outputTokens,
-      latencyMs,
-      costUsd,
-      model: this.modelName,
-      provider: "claude",
-    };
   }
 }

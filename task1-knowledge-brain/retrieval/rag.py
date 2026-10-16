@@ -10,9 +10,10 @@ from pathlib import Path
 from typing import Optional
 
 from app.database import get_db
-from app.models import QueryResponse, Source, ImageRef
+from app.models import QueryResponse, Source, ImageRef, RAGAnswerOutput
 from retrieval.search import hybrid_search
 from llm.factory import get_llm_client
+from llm.interface import LLMError
 
 logger = logging.getLogger(__name__)
 
@@ -142,33 +143,67 @@ async def answer_query(
         f"Please provide an accurate, evidence-based answer with inline markdown citations."
     )
 
-    # 4. Generate answer with LLM
+    # 4. Generate answer with LLM using structured Pydantic schema
     llm = get_llm_client(step="rag_answer")
     try:
         response = await llm.generate(
             prompt=user_prompt,
             system_prompt=system_instruction,
+            response_schema=RAGAnswerOutput,
             request_id=req_id,
             step="rag_answer",
         )
-        answer_text = response.text.strip()
+        if response.parsed and isinstance(response.parsed, RAGAnswerOutput):
+            sufficient = response.parsed.sufficient_evidence
+            answer_text = response.parsed.answer.strip()
+        else:
+            # Fallback if parsed is not directly populated on response
+            import json
+            try:
+                data = json.loads(response.text)
+                parsed = RAGAnswerOutput(**data)
+                sufficient = parsed.sufficient_evidence
+                answer_text = parsed.answer.strip()
+            except Exception:
+                # If model returned unstructured text, treat as answered
+                answer_text = response.text.strip()
+                sufficient = True
+    except LLMError as e:
+        logger.error(
+            "LLM answering failed (request_id=%s, code=%s): %s",
+            req_id,
+            e.code,
+            e.message,
+        )
+        return QueryResponse(
+            answer=f"Knowledge service error: {e.message}",
+            status="error",
+            error_code=e.code,
+            sources=list(sources_dict.values()),
+            images=images_list[:3],
+            needs_human=True,
+            escalation_id=None,
+            request_id=req_id,
+        )
     except Exception as e:
-        logger.error("LLM answering failed: %s", e)
-        answer_text = (
-            "An error occurred while generating the answer. Retrieved documentation sources "
-            "are provided below for your reference."
+        logger.error(
+            "Unexpected error during LLM answer generation (request_id=%s): %s",
+            req_id,
+            e,
+        )
+        return QueryResponse(
+            answer="Knowledge service encountered an internal error while generating an answer.",
+            status="error",
+            error_code="INTERNAL_ERROR",
+            sources=list(sources_dict.values()),
+            images=images_list[:3],
+            needs_human=True,
+            escalation_id=None,
+            request_id=req_id,
         )
 
-    # Check for keywords indicating insufficient evidence in answer
-    lower_ans = answer_text.lower()
-    insufficient = any(phrase in lower_ans for phrase in [
-        "not mentioned in the context",
-        "context does not contain",
-        "insufficient information",
-        "cannot confirm from the documentation",
-        "not specified in the provided documents",
-    ])
-
+    # Status is determined strictly and solely from the structured boolean field sufficient_evidence
+    insufficient = not sufficient
     esc_id = None
     if insufficient:
         esc_id = await create_escalation(

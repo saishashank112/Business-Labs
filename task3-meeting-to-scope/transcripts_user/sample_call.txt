@@ -1,0 +1,10 @@
+# Sample User Transcript
+# Format: 'Speaker: text' or '[timestamp] Speaker: text'
+[00:01:00] Emily Watson: Hello Alex, thank you for joining our kickoff meeting today.
+[00:01:25] Alex Rivera: Good morning Emily! Glad to connect. Let's discuss your key platform goals.
+[00:02:10] Emily Watson: We need to import our 500 member law firms via CSV with category tags.
+[00:03:00] Alex Rivera: Brilliant Directories supports CSV category and member imports natively.
+[00:04:15] Emily Watson: We also need automated email alerts sent to the lead attorney when a client submits a consultation request.
+[00:05:00] Alex Rivera: That is handled natively through Email Forwarders and Lead Routing.
+[00:06:20] Emily Watson: Great. Can we target launch for November 20, 2026?
+[00:07:00] Alex Rivera: Yes, November 20 is confirmed. We will draft the full scope.

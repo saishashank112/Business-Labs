@@ -1,0 +1,95 @@
+{
+  "version": "1.1.0",
+  "date_checked": "2026-10-16",
+  "currency": "USD",
+  "models": {
+    "gemini-2.5-flash": {
+      "provider": "google",
+      "model_name": "gemini-2.5-flash",
+      "verified": true,
+      "source_url": "https://ai.google.dev/pricing",
+      "date_checked": "2026-10-16",
+      "input_cost_per_million": 0.30,
+      "output_cost_per_million": 2.50,
+      "cache_read_cost_per_million": 0.03,
+      "image_pricing_basis": {
+        "method": "tokenized_tiles",
+        "tokens_per_image": 258,
+        "tile_dimension": "768x768",
+        "billed_as": "input_tokens",
+        "cost_per_image_usd": 0.0000774,
+        "formula": "(258 / 1,000,000) * $0.30"
+      }
+    },
+    "gemini-2.5-flash-lite": {
+      "provider": "google",
+      "model_name": "gemini-2.5-flash-lite",
+      "verified": true,
+      "source_url": "https://ai.google.dev/pricing",
+      "date_checked": "2026-10-16",
+      "input_cost_per_million": 0.10,
+      "output_cost_per_million": 0.40,
+      "cache_read_cost_per_million": 0.01,
+      "image_pricing_basis": {
+        "method": "tokenized_tiles",
+        "tokens_per_image": 258,
+        "tile_dimension": "768x768",
+        "billed_as": "input_tokens",
+        "cost_per_image_usd": 0.0000258,
+        "formula": "(258 / 1,000,000) * $0.10"
+      }
+    },
+    "gemini-flash-latest": {
+      "provider": "google",
+      "model_name": "gemini-flash-latest",
+      "is_alias": true,
+      "resolved_model": "gemini-3.8-flash",
+      "verified": true,
+      "source_url": "https://ai.google.dev/pricing",
+      "date_checked": "2026-10-16",
+      "input_cost_per_million": 0.30,
+      "output_cost_per_million": 2.50,
+      "cache_read_cost_per_million": 0.03,
+      "image_pricing_basis": {
+        "method": "tokenized_tiles",
+        "tokens_per_image": 258,
+        "billed_as": "input_tokens",
+        "cost_per_image_usd": 0.0000774
+      }
+    },
+    "claude-haiku-placeholder": {
+      "provider": "anthropic",
+      "model_name": "pending-console-id",
+      "verified": false,
+      "status": "unverified_placeholder_pending_console_ids",
+      "date_checked": "2026-10-16",
+      "source_url": "https://www.anthropic.com/pricing",
+      "note": "Awaiting active Claude Haiku model ID from user Anthropic console. Excluded from budget calculations.",
+      "input_cost_per_million": null,
+      "output_cost_per_million": null,
+      "cache_read_cost_per_million": null,
+      "image_pricing_basis": {
+        "method": "pixel_dimension_formula",
+        "formula": "tokens ≈ (width * height) / 750",
+        "status": "unverified"
+      }
+    },
+    "claude-sonnet-placeholder": {
+      "provider": "anthropic",
+      "model_name": "pending-console-id",
+      "verified": false,
+      "status": "unverified_placeholder_pending_console_ids",
+      "date_checked": "2026-10-16",
+      "source_url": "https://www.anthropic.com/pricing",
+      "note": "Awaiting active Claude Sonnet model ID from user Anthropic console. Excluded from budget calculations.",
+      "input_cost_per_million": null,
+      "output_cost_per_million": null,
+      "cache_read_cost_per_million": null,
+      "image_pricing_basis": {
+        "method": "pixel_dimension_formula",
+        "formula": "tokens ≈ (width * height) / 750",
+        "status": "unverified"
+      }
+    }
+  }
+}

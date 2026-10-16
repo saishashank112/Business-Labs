@@ -34,40 +34,36 @@ async def check_requirement_feasibility(
             status = data.get("status", "")
             lower_ans = answer.lower()
 
-            if status == "insufficient_evidence" or data.get("needs_human"):
+            if status in ("error", "insufficient_evidence") or data.get("needs_human"):
+                err_code = data.get("error_code")
                 requirement.feasibility = "needs_clarification"
                 requirement.feasibility_detail = (
-                    "Knowledge Brain found no conclusive evidence. Flagged for human technical review."
+                    f"Knowledge Brain {status} [{err_code}]: {answer}" if err_code else (answer or "Insufficient evidence or service error.")
                 )
+                requirement.existing_solution = "Pending clarification from technical documentation."
             elif "custom" in lower_ans or "not natively supported" in lower_ans or "webhook" in lower_ans:
                 requirement.feasibility = "potential_custom"
                 requirement.feasibility_detail = answer[:250]
+                requirement.existing_solution = answer[:200]
             elif "external" in lower_ans or "limitation" in lower_ans or "third-party" in lower_ans:
                 requirement.feasibility = "existing_feature_with_limitation"
                 requirement.feasibility_detail = answer[:250]
+                requirement.existing_solution = answer[:200]
             else:
                 requirement.feasibility = "existing_config"
                 requirement.feasibility_detail = answer[:250]
-
-            requirement.existing_solution = answer[:200]
+                requirement.existing_solution = answer[:200]
         else:
             requirement.feasibility = "needs_clarification"
             requirement.feasibility_detail = f"Task 1 HTTP error ({resp.status_code}). Human verification needed."
+            requirement.existing_solution = "Pending clarification due to service error."
     except Exception as e:
-        logger.warning("Failed to connect to Task 1 Knowledge Brain: %s", e)
-        # Rule-based fallback based on keywords if Task 1 server is offline
-        desc_lower = requirement.description.lower()
-        if "category" in desc_lower or "csv" in desc_lower or "email forwarder" in desc_lower or "ssl" in desc_lower or "social" in desc_lower or "stripe" in desc_lower or "map" in desc_lower or "google" in desc_lower:
-            requirement.feasibility = "existing_config"
-            requirement.feasibility_detail = "Supported via native Brilliant Directories admin configuration."
-        elif "mass email" in desc_lower or "campaign" in desc_lower:
-            requirement.feasibility = "existing_feature_with_limitation"
-            requirement.feasibility_detail = "Native email tool has volume caps; recommends external SendGrid/Mailchimp integration."
-        elif "2fa" in desc_lower or "sms" in desc_lower or "twilio" in desc_lower:
-            requirement.feasibility = "potential_custom"
-            requirement.feasibility_detail = "Requires custom webhook or API integration with third-party SMS provider."
-        else:
-            requirement.feasibility = "needs_clarification"
-            requirement.feasibility_detail = "Knowledge service offline. Flagged for human review."
+        logger.warning("Failed to connect to Task 1 Knowledge Brain (%s): %s", type(e).__name__, e)
+        # On timeout, connection error, or service unavailability, never guess. Always label needs_clarification.
+        requirement.feasibility = "needs_clarification"
+        requirement.feasibility_detail = (
+            f"Knowledge service unavailable or timed out ({type(e).__name__}). Flagged for human technical review."
+        )
+        requirement.existing_solution = "Pending clarification from technical documentation."
 
     return requirement

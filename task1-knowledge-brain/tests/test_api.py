@@ -1,9 +1,8 @@
-"""Tests for Knowledge Brain API routes via FastAPI test client."""
-
 import pytest
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 from app.config import settings
+from app.database import init_db
 
 
 @pytest.mark.asyncio
@@ -42,6 +41,7 @@ async def test_query_rejects_invalid_api_key():
 @pytest.mark.asyncio
 async def test_query_success_with_valid_api_key():
     """POST /query with valid X-API-Key should return 200 and propagate request ID."""
+    await init_db()
     custom_request_id = "test-req-id-12345"
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         response = await ac.post(
@@ -59,3 +59,32 @@ async def test_query_success_with_valid_api_key():
     assert "sources" in data
     assert response.headers.get("X-Request-Id") == custom_request_id
     assert data["request_id"] == custom_request_id
+
+
+@pytest.mark.asyncio
+async def test_startup_fails_if_t1_api_key_is_default(monkeypatch):
+    from app.main import lifespan
+    monkeypatch.setattr(settings, "t1_api_key", "change-me-in-production")
+    with pytest.raises(RuntimeError, match="CRITICAL SECURITY CONFIG ERROR"):
+        async with lifespan(app):
+            pass
+
+
+@pytest.mark.asyncio
+async def test_startup_fails_if_t1_api_key_is_empty(monkeypatch):
+    from app.main import lifespan
+    monkeypatch.setattr(settings, "t1_api_key", "")
+    with pytest.raises(RuntimeError, match="CRITICAL SECURITY CONFIG ERROR"):
+        async with lifespan(app):
+            pass
+
+
+@pytest.mark.asyncio
+async def test_startup_refuses_final_profile_with_empty_claude_ids(monkeypatch):
+    from app.main import lifespan
+    monkeypatch.setattr(settings, "t1_api_key", "valid-key-12345")
+    monkeypatch.setattr(settings, "profile", "final")
+    monkeypatch.setattr(settings, "claude_model_fast", "")
+    with pytest.raises(RuntimeError, match="Final profile requires CLAUDE_MODEL_FAST"):
+        async with lifespan(app):
+            pass

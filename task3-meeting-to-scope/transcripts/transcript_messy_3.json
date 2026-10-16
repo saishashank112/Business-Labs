@@ -1,0 +1,23 @@
+{
+  "id": "transcript_messy_3",
+  "project_id": "proj_lawyers_directory",
+  "project_name": "Lawyers Directory Portal",
+  "label": "M3",
+  "meeting_date": "2026-10-27",
+  "is_follow_up": true,
+  "parent_transcript_id": "transcript_a",
+  "client_name": "Emily Watson",
+  "consultant_name": "Alex Rivera",
+  "dialogue": [
+    {
+      "timestamp": "00:03:00",
+      "speaker": "Emily Watson",
+      "text": "Regarding our schedule, our board review got delayed so we need this a couple of weeks later than what we originally planned."
+    },
+    {
+      "timestamp": "00:03:30",
+      "speaker": "Alex Rivera",
+      "text": "No problem, we will push the milestone window out accordingly."
+    }
+  ]
+}

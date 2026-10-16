@@ -1,0 +1,58 @@
+[
+  {
+    "model": "gemini-2.5-flash",
+    "resolved_model": "gemini-2.5-flash",
+    "status": "ERROR (429)",
+    "quota_id": "N/A",
+    "quota_dimension": "Resource Exhausted",
+    "detail": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to"
+  },
+  {
+    "model": "gemini-2.5-flash-lite",
+    "resolved_model": "gemini-2.5-flash-lite",
+    "status": "SUCCESS",
+    "quota_id": "N/A",
+    "quota_dimension": "N/A",
+    "detail": "Hi"
+  },
+  {
+    "model": "gemini-flash-latest",
+    "resolved_model": "gemini-flash-latest",
+    "status": "ERROR (429)",
+    "quota_id": "N/A",
+    "quota_dimension": "Resource Exhausted",
+    "detail": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to"
+  },
+  {
+    "model": "gemini-2.0-flash",
+    "resolved_model": "gemini-2.0-flash",
+    "status": "ERROR (404)",
+    "quota_id": "N/A",
+    "quota_dimension": "N/A",
+    "detail": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for th"
+  },
+  {
+    "model": "gemini-1.5-flash",
+    "resolved_model": "gemini-1.5-flash",
+    "status": "ERROR (404)",
+    "quota_id": "N/A",
+    "quota_dimension": "N/A",
+    "detail": "models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService."
+  },
+  {
+    "model": "gemini-1.5-flash-8b",
+    "resolved_model": "gemini-1.5-flash-8b",
+    "status": "ERROR (404)",
+    "quota_id": "N/A",
+    "quota_dimension": "N/A",
+    "detail": "models/gemini-1.5-flash-8b is not found for API version v1beta, or is not supported for generateContent. Call ModelServi"
+  },
+  {
+    "model": "gemini-2.5-pro",
+    "resolved_model": "gemini-2.5-pro",
+    "status": "ERROR (404)",
+    "quota_id": "N/A",
+    "quota_dimension": "N/A",
+    "detail": "This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-p"
+  }
+]

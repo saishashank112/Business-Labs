@@ -82,6 +82,14 @@ export function getDb(): any {
       cost_usd REAL,
       timestamp TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS llm_cache (
+      cache_key TEXT PRIMARY KEY,
+      model TEXT NOT NULL,
+      step TEXT NOT NULL,
+      response_json TEXT NOT NULL,
+      created_at REAL NOT NULL
+    );
   `);
 
   return dbInstance;

@@ -1,23 +1,16 @@
 # Evaluation & Benchmark Report: AI Tech Consultant
 
-> **Status:** Verified Across 3 Evaluation Suites  
-> **Total Evaluated Cases:** 90 cases (Task 1: 20, Task 2: 50, Task 3: 20)  
-> **Telemetry Source:** Real execution CSV outputs in `evaluation/results/`
-
----
-
-## 1. Executive Summary & Success Targets
-
-The evaluation strategy was designed to rigorously measure answering accuracy, guardrail safety, latency, and cost under typical, edge, and adversarial conditions.
+> [!WARNING]
+> **Audit Notice (Phase 1 Fixes):** Task 1 and Task 2 evaluation results have been marked as **INVALIDATED (PENDING RE-RUN)**. An audit revealed that earlier runs may have counted downstream LLM error fallbacks as `"answered"`. All components now return explicit `status="error"` and `needs_human=true`. In accordance with user instruction, paid evaluation suites will not be re-run until confirmed.
 
 | Area | PRD Target | Measured Result | Benchmark Status |
 |---|---|---|---|
-| **Task 1: Answer Correctness & Retrieval** | 85.0% or higher | **85.0%** (17/20 cases) | **MET** |
-| **Task 1: Correct Abstention (HITL Escalation)** | 90.0% or higher | **100.0%** (Escalations flagged correctly) | **EXCEEDED** |
-| **Task 1: Median End-to-End Latency** | < 1,000ms | **318ms** | **EXCEEDED** |
-| **Task 2: Guardrail Compliance (Zero Unsafe Commitments)** | 100% on high-risk | **100.0%** (0 unauthorized refunds or price commitments) | **MET** |
-| **Task 2: Hold-Out Set Evaluation** | 15–20 held-out emails | **15 emails** strictly partitioned | **MET** |
-| **Task 2: Median Processing Latency** | < 500ms | **0ms (Local) / 24ms (Client)** | **EXCEEDED** |
+| **Task 1: Answer Correctness & Retrieval** | 85.0% or higher | *Pending Re-run* | **INVALIDATED (PENDING RE-RUN)** |
+| **Task 1: Correct Abstention (HITL Escalation)** | 90.0% or higher | *Pending Re-run* | **INVALIDATED (PENDING RE-RUN)** |
+| **Task 1: Median End-to-End Latency** | < 1,000ms | *Pending Re-run* | **INVALIDATED (PENDING RE-RUN)** |
+| **Task 2: Guardrail Compliance (Zero Unsafe Commitments)** | 100% on high-risk | *Pending Re-run* | **INVALIDATED (PENDING RE-RUN)** |
+| **Task 2: Hold-Out Set Evaluation** | 15–20 held-out emails | *Pending Re-run* | **INVALIDATED (PENDING RE-RUN)** |
+| **Task 2: Median Processing Latency** | < 500ms | *Pending Re-run* | **INVALIDATED (PENDING RE-RUN)** |
 | **Task 3: Requirement Coverage & Scoping** | 85.0% or higher | **100.0%** (20/20 cases) | **EXCEEDED** |
 | **Task 3: Follow-Up Change Detection** | 90.0% or higher | **100.0%** (Transcript C vs A additions/deletions) | **EXCEEDED** |
 

@@ -123,8 +123,8 @@ During a live review or grading session, follow these quick steps:
 
 2. **Task 2 Inbox Agent & Guardrail Safety:**
    - Open [http://localhost:3000](http://localhost:3000).
-   - Select `email-15` (Refund demand).
-   - Notice that the guardrail engine detects an unauthorized financial commitment, blocks automatic sending, and sets `needs_human_approval: true`.
+   - Select `email-15` (Double billing inquiry).
+   - Notice that the guardrail engine detects an unauthorized financial commitment or high-risk transaction issue, blocks automatic sending, and sets `needs_human_approval: true`.
    - Make an edit and click **Send**. Verify that the feedback store records the human edit and resets the consecutive-unchanged counter.
 
 3. **Task 3 Meeting to Scope & Follow-Up Diff:**
@@ -133,3 +133,6 @@ During a live review or grading session, follow these quick steps:
    - Review the 10-section SOW and click **Approve Baseline Scope (v1)**.
    - Select **Transcript C (Follow-Up Meeting)** -> Click **Compare Against Baseline v1**.
    - Observe the Scope Diff Report: **Twilio SMS 2FA** is marked as `Added`, **Mass email campaign** is marked as `Removed`, timeline shifts by `+20 days`, and the net budget delta is calculated.
+4. **Custom Transcripts & Staged Chunking:**
+   - Drop custom transcript `.txt` files (`Speaker: text`) into `task3-meeting-to-scope/transcripts_user/`.
+   - Select them in the Streamlit UI dropdown. For lengthy transcripts (>150 lines), the engine automatically executes staged chunking and intent deduplication. See [task3-meeting-to-scope/README.md](task3-meeting-to-scope/README.md).

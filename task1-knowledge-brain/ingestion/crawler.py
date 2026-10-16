@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import urllib.robotparser
 from datetime import datetime, timezone
 from typing import Any
 
@@ -23,6 +22,7 @@ import httpx
 from app.config import settings
 from app.database import get_db
 from app.models import SitemapEntry
+from ingestion.robots_parser import WildcardRobotParser
 
 logger = logging.getLogger(__name__)
 
@@ -49,20 +49,20 @@ class CrawlResult:
 
 # ── Robots.txt checker ──────────────────────────────────────
 
-async def load_robots_txt(base_url: str) -> urllib.robotparser.RobotFileParser:
-    """Fetch robots.txt and return a parser we can query."""
+async def load_robots_txt(base_url: str) -> WildcardRobotParser:
+    """Fetch robots.txt and return a wildcard/anchor-aware parser we can query."""
     robots_url = base_url.rstrip("/") + "/robots.txt"
-    rp = urllib.robotparser.RobotFileParser()
+    parser = WildcardRobotParser()
 
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(robots_url)
-            rp.parse(resp.text.splitlines())
+            parser.parse(resp.text.splitlines())
     except Exception as exc:
         logger.warning("Could not fetch robots.txt: %s — allowing all", exc)
-        rp.allow_all = True  # type: ignore[attr-defined]
+        parser.allow_all = True
 
-    return rp
+    return parser
 
 
 # ── Core crawler ────────────────────────────────────────────
@@ -72,6 +72,8 @@ async def crawl_pages(
     delay: float | None = None,
     concurrency: int | None = None,
     max_retries: int | None = None,
+    limit: int | None = None,
+    resume: bool = True,
 ) -> list[CrawlResult]:
     """Crawl a list of sitemap entries politely and return results.
 
@@ -88,13 +90,28 @@ async def crawl_pages(
     concurrency = concurrency or settings.t1_crawl_concurrency
     max_retries = max_retries or settings.t1_crawl_max_retries
 
+    if limit is not None and len(entries) > limit:
+        logger.info("Applying crawl limit: processing %d of %d pages", limit, len(entries))
+        entries = entries[:limit]
+
+    semaphore = asyncio.Semaphore(concurrency)
+
     # Load robots.txt once for the whole crawl
     base_url = "https://support.brilliantdirectories.com"
     robots = await load_robots_txt(base_url)
 
-    # Semaphore limits how many pages we fetch at the same time
-    semaphore = asyncio.Semaphore(concurrency)
-    results: list[CrawlResult] = []
+    # Global rate limiter ensuring delay applies across all concurrent workers
+    global_rate_lock = asyncio.Lock()
+    last_req_time: float = 0.0
+
+    async def throttle():
+        nonlocal last_req_time
+        async with global_rate_lock:
+            now = asyncio.get_event_loop().time()
+            elapsed = now - last_req_time
+            if elapsed < delay:
+                await asyncio.sleep(delay - elapsed)
+            last_req_time = asyncio.get_event_loop().time()
 
     async with httpx.AsyncClient(
         timeout=30.0,
@@ -103,7 +120,12 @@ async def crawl_pages(
     ) as client:
 
         async def fetch_one(entry: SitemapEntry) -> CrawlResult:
-            """Fetch one page with retries and backoff."""
+            """Fetch one page with retries, resume check, and backoff."""
+            # Check manifest for resume
+            if resume and await _is_already_fetched(entry.url):
+                logger.info("Resuming: URL already fetched according to manifest: %s", entry.url)
+                return CrawlResult(url=entry.url, status="skipped", error="already_fetched")
+
             # Check robots.txt
             if not robots.can_fetch("*", entry.url):
                 logger.info("Blocked by robots.txt: %s", entry.url)
@@ -113,13 +135,13 @@ async def crawl_pages(
             for attempt in range(max_retries):  # type: ignore[arg-type]
                 async with semaphore:
                     try:
-                        # Polite delay before each request
+                        # Polite throttle applied globally across all workers
                         if attempt > 0:
                             backoff = delay * (2 ** attempt)  # type: ignore[operator]
                             logger.info("Retry %d for %s (backoff %.1fs)", attempt, entry.url, backoff)
                             await asyncio.sleep(backoff)
                         else:
-                            await asyncio.sleep(delay)  # type: ignore[arg-type]
+                            await throttle()
 
                         resp = await client.get(entry.url)
                         resp.raise_for_status()
@@ -152,6 +174,19 @@ async def crawl_pages(
         results = await asyncio.gather(*tasks)
 
     return list(results)
+
+
+async def _is_already_fetched(url: str) -> bool:
+    """Check if URL was already fetched in manifest."""
+    db = await get_db()
+    try:
+        cursor = await db.execute("SELECT status FROM manifest WHERE url = ?", (url,))
+        row = await cursor.fetchone()
+        return bool(row and row[0] == "fetched")
+    except Exception:
+        return False
+    finally:
+        await db.close()
 
 
 # ── Manifest helpers ────────────────────────────────────────

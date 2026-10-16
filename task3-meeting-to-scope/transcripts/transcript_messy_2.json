@@ -1,0 +1,23 @@
+{
+  "id": "transcript_messy_2",
+  "project_id": "proj_lawyers_directory",
+  "project_name": "Lawyers Directory Portal",
+  "label": "M2",
+  "meeting_date": "2026-10-26",
+  "is_follow_up": true,
+  "parent_transcript_id": "transcript_a",
+  "client_name": "Emily Watson",
+  "consultant_name": "Alex Rivera",
+  "dialogue": [
+    {
+      "timestamp": "00:02:10",
+      "speaker": "Emily Watson",
+      "text": "Also on security, can we also text people a code when they log in to make sure only real attorneys access their profiles?"
+    },
+    {
+      "timestamp": "00:02:40",
+      "speaker": "Alex Rivera",
+      "text": "Definitely, multi-factor login verification will secure their portal accounts."
+    }
+  ]
+}

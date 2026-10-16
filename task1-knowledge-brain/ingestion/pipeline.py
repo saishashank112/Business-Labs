@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 async def run_ingestion_pipeline(
     max_pages: int | None = None,
+    resume: bool = True,
 ) -> dict:
     """Run the full ingestion pipeline and return a report.
 
@@ -65,7 +66,7 @@ async def run_ingestion_pipeline(
 
     # ── Step 3: Crawl pages ─────────────────────────────────
     logger.info("Starting crawl of %d pages...", len(entries))
-    results = await crawl_pages(entries)
+    results = await crawl_pages(entries, limit=limit, resume=resume)
 
     # ── Step 4 & 5: Parse and store ─────────────────────────
     for result in results:
@@ -210,3 +211,15 @@ async def index_stored_articles() -> int:
 
     logger.info("Successfully indexed %d chunks across %d articles", total_chunks, len(rows))
     return total_chunks
+
+
+if __name__ == "__main__":
+    import argparse
+    import asyncio
+
+    parser = argparse.ArgumentParser(description="Run Knowledge Brain Ingestion Pipeline")
+    parser.add_argument("--limit", "-n", type=int, default=None, help="Limit number of pages to crawl (e.g. 20)")
+    parser.add_argument("--no-resume", action="store_true", help="Do not skip already fetched URLs from manifest")
+    args = parser.parse_args()
+
+    asyncio.run(run_ingestion_pipeline(max_pages=args.limit, resume=not args.no_resume))

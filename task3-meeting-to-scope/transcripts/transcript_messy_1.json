@@ -1,0 +1,23 @@
+{
+  "id": "transcript_messy_1",
+  "project_id": "proj_lawyers_directory",
+  "project_name": "Lawyers Directory Portal",
+  "label": "M1",
+  "meeting_date": "2026-10-25",
+  "is_follow_up": true,
+  "parent_transcript_id": "transcript_a",
+  "client_name": "Emily Watson",
+  "consultant_name": "Alex Rivera",
+  "dialogue": [
+    {
+      "timestamp": "00:01:00",
+      "speaker": "Emily Watson",
+      "text": "Hey Alex, quick sync on the scope changes. For the email blast stuff, let's drop the newsletter thing altogether since our comms team handles that externally."
+    },
+    {
+      "timestamp": "00:01:45",
+      "speaker": "Alex Rivera",
+      "text": "Sounds good Emily, we can strike that feature from our active list."
+    }
+  ]
+}

@@ -89,21 +89,33 @@ with tab_pipeline:
     st.markdown('<div class="main-title">Multi-Agent Meeting to Scope</div>', unsafe_allow_html=True)
     st.caption("Extract requirements, verify feasibility against Task 1, generate scope, hours estimate, and proposal.")
 
-    transcripts = [
-        {"id": "transcript_a", "label": "Transcript A — Local Lawyers Directory (Initial)"},
-        {"id": "transcript_b", "label": "Transcript B — Artisan Bakers Guild (E-commerce)"},
-        {"id": "transcript_c", "label": "Transcript C — Lawyers Directory (Follow-Up Meeting)"},
-    ]
+    t_api_res = call_t3_api("GET", "/api/transcripts")
+    if t_api_res.get("status_code") == 200 and t_api_res.get("data"):
+        transcripts = t_api_res["data"]
+    else:
+        transcripts = [
+            {"id": "transcript_a", "label": "Transcript A — Local Lawyers Directory (Initial)"},
+            {"id": "transcript_b", "label": "Transcript B — Artisan Bakers Guild (E-commerce)"},
+            {"id": "transcript_c", "label": "Transcript C — Lawyers Directory (Follow-Up Meeting)"},
+        ]
+        user_dir = os.path.join(os.path.dirname(__file__), "transcripts_user")
+        if os.path.exists(user_dir):
+            for uf in sorted(os.listdir(user_dir)):
+                if uf.endswith(".txt"):
+                    stem = uf[:-4]
+                    transcripts.append({"id": stem, "label": f"📁 User: {stem.replace('_', ' ').title()}"})
 
     selected_t = st.selectbox(
         "Select Meeting Transcript:",
         options=transcripts,
-        format_func=lambda x: x["label"],
+        format_func=lambda x: str(x.get("label", x.get("id"))),
     )
 
     # Load and show transcript preview
     t_id = selected_t["id"]
     t_path = os.path.join(os.path.dirname(__file__), "transcripts", f"{t_id}.json")
+    ut_path = os.path.join(os.path.dirname(__file__), "transcripts_user", f"{t_id}.txt")
+
     if os.path.exists(t_path):
         with open(t_path, "r", encoding="utf-8") as f:
             t_data = json.load(f)
@@ -114,6 +126,16 @@ with tab_pipeline:
             st.write(f"**Meeting Date:** {t_data.get('meeting_date')}")
             st.divider()
             for turn in t_data.get("dialogue", []):
+                st.markdown(f"**[{turn.get('timestamp')}] {turn.get('speaker')}:** {turn.get('text')}")
+    elif os.path.exists(ut_path):
+        from agents.transcript_analyst import parse_transcript_text
+        with open(ut_path, "r", encoding="utf-8") as f:
+            u_text = f.read()
+        u_dialogue = parse_transcript_text(u_text)
+        with st.expander(f"📁 View User Transcript: {t_id.replace('_', ' ').title()} ({len(u_dialogue)} parsed turns)"):
+            st.caption(f"Source file: `transcripts_user/{t_id}.txt`")
+            st.divider()
+            for turn in u_dialogue:
                 st.markdown(f"**[{turn.get('timestamp')}] {turn.get('speaker')}:** {turn.get('text')}")
 
     if st.button("🚀 Run 5-Agent Pipeline on Selected Transcript", type="primary"):
@@ -134,6 +156,13 @@ with tab_pipeline:
     # Display Analysis Results if available in session
     if f"analysis_{t_id}" in st.session_state:
         data = st.session_state[f"analysis_{t_id}"]
+
+        if data.get("extraction_mode") == "offline_heuristic":
+            st.warning(
+                "⚠️ DEGRADED EXTRACTION MODE (Offline Heuristic): Results were generated using rule-based "
+                "offline extraction because LLM was unavailable or quota was exhausted. Natural wording, "
+                "negations, and complex statements are degraded."
+            )
 
         # 1. Requirements & Feasibility
         st.subheader("1. Extracted Requirements & Platform Feasibility")
@@ -261,6 +290,14 @@ with tab_diff:
                 st.success("Scope Diff Generated Successfully!")
 
                 st.markdown("### 📋 Change Report Summary")
+                ext_mode = report.get("extraction_mode", "llm")
+                if ext_mode == "offline_heuristic" or diff_data.get("extraction_mode") == "offline_heuristic":
+                    st.warning(
+                        "⚠️ DEGRADED EXTRACTION MODE (Offline Heuristic): Follow-up diff was performed using "
+                        "rule-based offline extraction because LLM was unavailable. Nuanced intent matching is degraded."
+                    )
+                mode_badge = "🤖 Extraction Mode: LLM Grounded" if ext_mode == "llm" else "⚙️ Extraction Mode: Offline Heuristic Rule-Based"
+                st.caption(mode_badge)
                 st.text(report.get("summary"))
 
                 c1, c2, c3 = st.columns(3)

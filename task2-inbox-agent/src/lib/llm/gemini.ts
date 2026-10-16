@@ -20,6 +20,13 @@ export class GeminiProvider implements LLMClient {
       throw new Error("GEMINI_API_KEY is not set in environment.");
     }
 
+    const { computeCacheKey, getCachedResponse, setCachedResponse } = await import("./cache");
+    const cacheKey = computeCacheKey(this.modelName, step, systemPrompt, prompt);
+    const cached = getCachedResponse(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const startTime = Date.now();
     const { GoogleGenAI } = await import("@google/genai");
     const ai = new GoogleGenAI({ apiKey: this.apiKey });
@@ -44,7 +51,7 @@ export class GeminiProvider implements LLMClient {
 
     logLlmCall(requestId, step, this.modelName, "gemini", inputTokens, outputTokens, latencyMs, costUsd);
 
-    return {
+    const result: LLMResponse = {
       text,
       inputTokens,
       outputTokens,
@@ -53,5 +60,8 @@ export class GeminiProvider implements LLMClient {
       model: this.modelName,
       provider: "gemini",
     };
+
+    setCachedResponse(cacheKey, this.modelName, step, result);
+    return result;
   }
 }
