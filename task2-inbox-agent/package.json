@@ -7,7 +7,8 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eval": "npx tsx evaluation/run_evals.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.0",
