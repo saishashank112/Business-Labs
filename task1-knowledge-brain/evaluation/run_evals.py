@@ -56,46 +56,62 @@ async def run_task1_evaluations(
     all_cases = json.loads(cases_path.read_text(encoding="utf-8"))
     cases = all_cases[:limit] if limit is not None else all_cases
 
+    from llm.claude_budget import get_claude_budget_summary
+
     if not models_to_eval:
         models_to_eval = [
-            settings.t1_rag_model,
-            "gemini-2.5-flash-lite",
-            "claude-haiku-placeholder",
+            getattr(settings, "claude_model_fast", "") or "claude-haiku-5-5",
+            getattr(settings, "claude_model_strong", "") or "claude-sonnet-5-5",
+            getattr(settings, "grader_model", "") or "gemini-2.5-flash-lite",
         ]
 
-    # Enforce --max-cost verified pricing policy
-    if max_cost is not None:
+    # Enforce --max-cost pricing policy for live runs
+    if max_cost is not None and not dry_run:
         for m in models_to_eval:
             m_pricing = prices.get(m, {})
-            if not m_pricing or not m_pricing.get("verified") or m_pricing.get("input_cost_per_million") is None:
+            if not m_pricing or m_pricing.get("input_cost_per_million") is None:
                 raise RuntimeError(
-                    f"Pricing for configured model '{m}' is unverified or missing in config/prices.json. "
-                    "Cannot enforce --max-cost without verified pricing (will not assume zero cost). Refusing to run."
+                    f"Pricing for configured model '{m}' is missing in config/prices.json. "
+                    "Cannot enforce --max-cost without pricing rates (will not assume zero cost). Refusing to run."
                 )
+            if not m_pricing.get("verified"):
+                print(f"[Notice] Pricing for '{m}' is unverified in config/prices.json. Proceeding with configured rates (${m_pricing.get('input_cost_per_million')}/${m_pricing.get('output_cost_per_million')} per MTok).")
 
     # DRY-RUN SAFETY CHECK
     if dry_run:
-        print("\n=== [DRY-RUN MODE — NO CALLS WILL BE MADE] ===")
+        print("\n=== [TASK 1: KNOWLEDGE BRAIN — DRY-RUN MODE (ZERO CALLS)] ===")
         total_estimated_calls = len(models_to_eval) * len(cases)
         total_est_cost = 0.0
-        print(f"Target Models: {models_to_eval}")
-        print(f"Total Test Cases: {len(cases)} (limit={limit})")
-        print(f"Total Planned Calls: {total_estimated_calls}")
-        print("\nPlanned Cases:")
-        for idx, c in enumerate(cases, 1):
-            est_in_tokens = len(c["question"].split()) * 4 + 300  # RAG context estimate
-            est_out_tokens = 150
-            case_est_cost = estimate_case_cost(models_to_eval[0], est_in_tokens, est_out_tokens, prices)
-            total_est_cost += case_est_cost * len(models_to_eval)
-            print(f"  {idx}. [{c['id']}] '{c['question']}' -> Expected: {c['expected_status']} (Est tokens: ~{est_in_tokens}in/~{est_out_tokens}out)")
 
-        print(f"\nEstimated Spend Across All Models: ${total_est_cost:.6f} USD")
+        model_stats = {}
+        for m in models_to_eval:
+            model_stats[m] = {"calls": len(cases), "in_tokens": 0, "out_tokens": 0, "cost": 0.0}
+
+        for c in cases:
+            est_in = len(c["question"].split()) * 4 + 350
+            est_out = 150
+            for m in models_to_eval:
+                c_cost = estimate_case_cost(m, est_in, est_out, prices)
+                model_stats[m]["in_tokens"] += est_in
+                model_stats[m]["out_tokens"] += est_out
+                model_stats[m]["cost"] += c_cost
+                total_est_cost += c_cost
+
+        print(f"Cases Evaluated: {len(cases)} (limit={limit}) | Total Planned Calls: {total_estimated_calls}")
+        print("\n| Task | Model | Planned Calls | Est. Input Tokens | Est. Output Tokens | Total Est. Tokens | Est. Cost (USD) |")
+        print("|---|---|---:|---:|---:|---:|---:|")
+        for m, stats in model_stats.items():
+            tot_tok = stats["in_tokens"] + stats["out_tokens"]
+            print(f"| Task 1 (Knowledge Brain) | `{m}` | {stats['calls']} | {stats['in_tokens']} | {stats['out_tokens']} | {tot_tok} | ${stats['cost']:.6f} |")
+
+        print(f"\nTotal Estimated Spend across all {len(models_to_eval)} models: ${total_est_cost:.6f} USD")
         if max_cost is not None:
             print(f"Configured Safety Budget (--max-cost): ${max_cost:.4f} USD")
-            if total_est_cost > max_cost:
-                print("⚠️ WARNING: Estimated spend exceeds configured safety budget. Run will stop early.")
-        print("=== DRY-RUN COMPLETE (Zero spend incurred) ===\n")
-        return {"dry_run": True, "planned_calls": total_estimated_calls, "estimated_cost": total_est_cost}
+
+        budget_summary = get_claude_budget_summary()
+        print(f"\n[GLOBAL CLAUDE BUDGET STATUS] Running Total: ${budget_summary['running_total_usd']:.4f} / ${budget_summary['max_total_claude_usd']:.2f} USD (Remaining: ${budget_summary['remaining_usd']:.4f} USD | Claude Calls Logged: {budget_summary['calls_count']})")
+        print("=== DRY-RUN COMPLETE (Zero real model calls made, zero tokens consumed) ===\n")
+        return {"dry_run": True, "planned_calls": total_estimated_calls, "estimated_cost": total_est_cost, "model_stats": model_stats}
 
     await init_db()
     results = []
@@ -109,7 +125,7 @@ async def run_task1_evaluations(
             break
 
         is_claude = "claude" in model_name.lower()
-        key_missing = is_claude and not getattr(settings, "claude_api_key", "")
+        key_missing = is_claude and not (getattr(settings, "claude_api_key", "") or getattr(settings, "anthropic_api_key", ""))
 
         print(f"\n--- Model: {model_name} {'[PENDING - NO API KEY]' if key_missing else ''} ---")
 
@@ -219,6 +235,8 @@ async def run_task1_evaluations(
         writer.writerows(results)
 
     print(f"\nTask 1 Eval Results saved to: {csv_path} (Total rows: {len(results)}, Total cost: ${accumulated_cost:.4f})")
+    budget_summary = get_claude_budget_summary()
+    print(f"[GLOBAL CLAUDE BUDGET STATUS] Running Total: ${budget_summary['running_total_usd']:.4f} / ${budget_summary['max_total_claude_usd']:.2f} USD (Remaining: ${budget_summary['remaining_usd']:.4f} USD | Claude Calls: {budget_summary['calls_count']})\n")
     return {"csv_path": str(csv_path), "total_rows": len(results), "total_cost": accumulated_cost}
 
 

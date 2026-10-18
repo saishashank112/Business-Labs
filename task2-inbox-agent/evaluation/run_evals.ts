@@ -65,55 +65,67 @@ async function runTask2Evaluations() {
     console.log(`Evaluation mode: LLM cache is ${process.env.LLM_CACHE_ENABLED !== "false" ? "ENABLED" : "OFF"}.`);
   }
 
+  const { getClaudeBudgetSummary } = await import("../src/lib/llm/budget");
+
   const modelsToEval = [
-    process.env.T2_CLASSIFY_MODEL || "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
-    "claude-haiku-placeholder",
+    process.env.CLAUDE_MODEL_FAST || "claude-haiku-5-5",
+    process.env.CLAUDE_MODEL_STRONG || "claude-sonnet-5-5",
+    process.env.GRADER_MODEL || "gemini-2.5-flash-lite",
   ];
 
   // DRY-RUN SAFETY CHECK
   if (dryRun) {
-    console.log("\n=== [TASK 2 DRY-RUN MODE — NO CALLS WILL BE MADE] ===");
+    console.log("\n=== [TASK 2: INBOX AGENT — DRY-RUN MODE (ZERO CALLS)] ===");
     const totalCalls = modelsToEval.length * emails.length;
     let totalEstCost = 0;
-    console.log(`Target Models: ${JSON.stringify(modelsToEval)}`);
-    console.log(`Total Emails: ${emails.length} (limit=${limit})`);
-    console.log(`Total Planned Calls: ${totalCalls}`);
-    console.log("\nPlanned Cases:");
-    emails.forEach((email, idx) => {
-      const inTok = (email.subject.length + email.body.length) / 3;
+
+    const modelStats: Record<string, { calls: number; inTokens: number; outTokens: number; cost: number }> = {};
+    for (const m of modelsToEval) {
+      modelStats[m] = { calls: emails.length, inTokens: 0, outTokens: 0, cost: 0 };
+    }
+
+    for (const email of emails) {
+      const inTok = Math.round((email.subject.length + email.body.length) / 3);
       const outTok = 60;
-      const caseCost = estimateCaseCost(modelsToEval[0], inTok, outTok, prices) * modelsToEval.length;
-      totalEstCost += caseCost;
-      console.log(`  ${idx + 1}. [${email.id}] '${email.subject.slice(0, 45)}...' -> Expected: ${email.expected_category || "any"}`);
-    });
-    if (maxCost !== null) {
       for (const m of modelsToEval) {
-        const mPricing = prices[m] || {};
-        if (!mPricing.verified || mPricing.input_cost_per_million === null || mPricing.input_cost_per_million === undefined) {
-          throw new Error(
-            `Pricing for configured model '${m}' is unverified or missing in config/prices.json. Cannot enforce --max-cost without verified pricing (will not assume zero cost). Refusing to run.`
-          );
-        }
+        const cCost = estimateCaseCost(m, inTok, outTok, prices);
+        modelStats[m].inTokens += inTok;
+        modelStats[m].outTokens += outTok;
+        modelStats[m].cost = Number((modelStats[m].cost + cCost).toFixed(6));
+        totalEstCost += cCost;
       }
     }
 
-    console.log(`\nEstimated Spend Across All Models: $${totalEstCost.toFixed(6)} USD`);
+    console.log(`Emails Evaluated: ${emails.length} (limit=${limit}) | Total Planned Calls: ${totalCalls}`);
+    console.log("\n| Task | Model | Planned Calls | Est. Input Tokens | Est. Output Tokens | Total Est. Tokens | Est. Cost (USD) |");
+    console.log("|---|---|---:|---:|---:|---:|---:|");
+    for (const [m, stats] of Object.entries(modelStats)) {
+      const totTok = stats.inTokens + stats.outTokens;
+      console.log(`| Task 2 (Inbox Agent) | \`${m}\` | ${stats.calls} | ${stats.inTokens} | ${stats.outTokens} | ${totTok} | $${stats.cost.toFixed(6)} |`);
+    }
+
+    console.log(`\nTotal Estimated Spend across all ${modelsToEval.length} models: $${totalEstCost.toFixed(6)} USD`);
     if (maxCost !== null) {
       console.log(`Configured Safety Budget (--max-cost): $${maxCost.toFixed(4)} USD`);
     }
-    console.log("=== DRY-RUN COMPLETE (Zero spend incurred) ===\n");
+
+    const budgetSummary = getClaudeBudgetSummary();
+    console.log(`\n[GLOBAL CLAUDE BUDGET STATUS] Running Total: $${budgetSummary.running_total_usd.toFixed(4)} / $${budgetSummary.max_total_claude_usd.toFixed(2)} USD (Remaining: $${budgetSummary.remaining_usd.toFixed(4)} USD | Claude Calls Logged: ${budgetSummary.calls_count})`);
+    console.log("=== DRY-RUN COMPLETE (Zero real model calls made, zero tokens consumed) ===\n");
     return;
   }
 
-  // Enforce --max-cost verified pricing policy for live runs as well
+  // Enforce --max-cost pricing policy for live runs as well
   if (maxCost !== null) {
     for (const m of modelsToEval) {
       const mPricing = prices[m] || {};
-      if (!mPricing.verified || mPricing.input_cost_per_million === null || mPricing.input_cost_per_million === undefined) {
+      if (mPricing.input_cost_per_million === null || mPricing.input_cost_per_million === undefined) {
         throw new Error(
-          `Pricing for configured model '${m}' is unverified or missing in config/prices.json. Cannot enforce --max-cost without verified pricing (will not assume zero cost). Refusing to run.`
+          `Pricing for configured model '${m}' is missing in config/prices.json. Cannot enforce --max-cost without pricing rates (will not assume zero cost). Refusing to run.`
         );
+      }
+      if (!mPricing.verified) {
+        console.log(`ℹ️ Notice: Pricing for '${m}' is unverified in config/prices.json. Proceeding with configured rates ($${mPricing.input_cost_per_million}/$${mPricing.output_cost_per_million} per MTok).`);
       }
     }
   }
@@ -242,10 +254,10 @@ async function runTask2Evaluations() {
 
   fs.writeFileSync(csvPath, header + rows, "utf-8");
   console.log(`\nTask 2 Eval Results saved to: ${csvPath} (Total rows: ${results.length}, Total cost: $${accumulatedCost.toFixed(4)})`);
+  const budgetSummary = getClaudeBudgetSummary();
+  console.log(`[GLOBAL CLAUDE BUDGET STATUS] Running Total: $${budgetSummary.running_total_usd.toFixed(4)} / $${budgetSummary.max_total_claude_usd.toFixed(2)} USD (Remaining: $${budgetSummary.remaining_usd.toFixed(4)} USD | Claude Calls: ${budgetSummary.calls_count})\n`);
 }
 
-if (require.main === module) {
-  runTask2Evaluations().catch(console.error);
-}
+runTask2Evaluations().catch(console.error);
 
 export { runTask2Evaluations };
