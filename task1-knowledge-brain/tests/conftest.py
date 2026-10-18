@@ -8,13 +8,38 @@ from app.config import settings
 def use_temporary_task1_db(tmp_path, monkeypatch):
     """Ensure all Task 1 tests run against an isolated temporary database, never touching real task1.db."""
     import shutil
+    import sqlite3
     from pathlib import Path
+    from app.database import SCHEMA
+    from ingestion.keyword_index import FTS_SCHEMA
 
     test_db = tmp_path / "task1_test.db"
     real_db = Path(__file__).parent.parent / "task1.db"
     if real_db.exists():
         shutil.copyfile(real_db, test_db)
+    else:
+        conn = sqlite3.connect(str(test_db))
+        try:
+            conn.executescript(SCHEMA)
+            conn.executescript(FTS_SCHEMA)
+            conn.execute(
+                """INSERT INTO chunks_fts (chunk_id, article_id, url, title, heading, content)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    "chk-ssl-test",
+                    "5000665570",
+                    "https://support.brilliantdirectories.com/support/solutions/articles/5000665570-ssl-https-faq",
+                    "SSL & HTTPS FAQ",
+                    "Free Let's Encrypt SSL",
+                    "Brilliant Directories provides free Let's Encrypt SSL certificates automatically.",
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
     monkeypatch.setattr(settings, "t1_db_path", str(test_db))
+
 
 
 @pytest.fixture
