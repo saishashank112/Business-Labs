@@ -12,6 +12,7 @@ from app.config import settings
 from llm.interface import LLMClient, LLMResponse, LLMError
 from llm.logger import log_llm_call, estimate_cost
 from llm.cache import compute_cache_key, get_cached_response, set_cached_response
+from llm.claude_budget import check_claude_budget, record_claude_call, get_claude_budget_summary
 
 logger = logging.getLogger(__name__)
 
@@ -107,13 +108,14 @@ class ClaudeProvider(LLMClient):
                 if formatted_system.strip():
                     kwargs["system"] = formatted_system.strip()
 
+                check_claude_budget()
                 response = await client.messages.create(**kwargs)
                 latency_ms = int((time.time() - start_time) * 1000)
 
                 text = "".join([b.text for b in response.content if hasattr(b, "text")])
                 input_tokens = response.usage.input_tokens if hasattr(response, "usage") else 0
                 output_tokens = response.usage.output_tokens if hasattr(response, "usage") else 0
-                cost_usd = estimate_cost("claude", self.model_name, input_tokens, output_tokens)
+                cost_usd = record_claude_call("task3", step, self.model_name, input_tokens, output_tokens, request_id)
 
                 parsed = None
                 if response_schema:

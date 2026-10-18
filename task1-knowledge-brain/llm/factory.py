@@ -38,21 +38,29 @@ class MockLLMClient(LLMClient):
         )
 
 
-def get_llm_client(step: str = "rag_answer") -> LLMClient:
-    """Return the appropriate LLM client based on PROFILE and available API keys."""
+def get_llm_client(step: str = "rag_answer", model_name: Optional[str] = None) -> LLMClient:
+    """Return the appropriate LLM client based on PROFILE, requested model, and available API keys."""
     profile = settings.profile.lower()
+    target_model = model_name or (getattr(settings, "t1_rag_model", None) if step == "rag_answer" else None)
+
+    if target_model:
+        if "claude" in target_model.lower():
+            return ClaudeProvider(model_name=target_model)
+        elif "gemini" in target_model.lower():
+            return GeminiProvider(model_name=target_model)
 
     # In "final" profile, Claude is preferred for core reasoning
-    if profile == "final" and step in ("rag_answer", "core_reasoning") and settings.claude_api_key:
+    has_claude_key = bool(getattr(settings, "claude_api_key", "") or getattr(settings, "anthropic_api_key", ""))
+    if profile == "final" and step in ("rag_answer", "core_reasoning") and has_claude_key:
         logger.info("Using ClaudeProvider for step: %s (PROFILE=%s)", step, profile)
-        return ClaudeProvider()
+        return ClaudeProvider(model_name=getattr(settings, "claude_model_fast", "") or getattr(settings, "claude_model_strong", ""))
 
     # Otherwise default to Gemini
     if settings.gemini_api_key:
-        return GeminiProvider()
+        return GeminiProvider(model_name=target_model)
 
-    if settings.claude_api_key:
-        return ClaudeProvider()
+    if has_claude_key:
+        return ClaudeProvider(model_name=target_model)
 
     # Neither key set — fallback to Mock client
     logger.warning("No GEMINI_API_KEY or CLAUDE_API_KEY found in .env. Using MockLLMClient.")

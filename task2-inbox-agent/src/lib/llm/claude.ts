@@ -1,12 +1,13 @@
 import { LLMClient, LLMResponse } from "./interface";
 import { logLlmCall } from "./logger";
+import { checkClaudeBudget, recordClaudeCall } from "./budget";
 
 export class ClaudeProvider implements LLMClient {
   private modelName: string;
   private apiKey: string;
 
   constructor(modelName?: string, apiKey?: string) {
-    this.modelName = modelName || process.env.T2_CLAUDE_MODEL || "claude-haiku-placeholder";
+    this.modelName = modelName || process.env.T2_CLAUDE_MODEL || process.env.CLAUDE_MODEL_FAST || "claude-haiku-5-5";
     this.apiKey = apiKey || process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || "";
   }
 
@@ -29,6 +30,8 @@ export class ClaudeProvider implements LLMClient {
       err.code = "LLM_UNAVAILABLE";
       throw err;
     }
+
+    checkClaudeBudget();
 
     const startTime = Date.now();
 
@@ -53,7 +56,7 @@ export class ClaudeProvider implements LLMClient {
 
       const inputTokens = response.usage.input_tokens || 0;
       const outputTokens = response.usage.output_tokens || 0;
-      const costUsd = (inputTokens / 1_000_000) * 0.25 + (outputTokens / 1_000_000) * 1.25;
+      const costUsd = recordClaudeCall("task2", step, this.modelName, inputTokens, outputTokens, requestId);
 
       const result: LLMResponse = {
         text,

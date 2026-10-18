@@ -13,6 +13,7 @@ from app.config import settings
 from llm.interface import LLMClient, LLMResponse, LLMError
 from llm.logger import log_llm_call, estimate_cost
 from llm.cache import compute_cache_key, get_cached_response, set_cached_response
+from llm.claude_budget import check_claude_budget, record_claude_call, get_claude_budget_summary
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +40,7 @@ class ClaudeProvider(LLMClient):
     """Anthropic Claude model provider using anthropic SDK."""
 
     def __init__(self, model_name: Optional[str] = None):
-        # Model ID loaded from environment/config, never hard-coded
-        self.model_name = model_name or getattr(settings, "t1_claude_model", "claude-haiku-placeholder")
+        self.model_name = model_name or getattr(settings, "t1_claude_model", "") or getattr(settings, "claude_model_fast", "") or "claude-haiku-5-5"
         self.api_key = getattr(settings, "anthropic_api_key", "") or getattr(settings, "claude_api_key", "")
 
     def _get_client(self):
@@ -111,6 +111,7 @@ class ClaudeProvider(LLMClient):
                 if formatted_system.strip():
                     kwargs["system"] = formatted_system.strip()
 
+                check_claude_budget()
                 response = await client.messages.create(**kwargs)
                 latency_ms = int((time.time() - start_time) * 1000)
 
@@ -121,7 +122,7 @@ class ClaudeProvider(LLMClient):
 
                 input_tokens = response.usage.input_tokens if hasattr(response, "usage") else 0
                 output_tokens = response.usage.output_tokens if hasattr(response, "usage") else 0
-                cost_usd = estimate_cost("claude", self.model_name, input_tokens, output_tokens)
+                cost_usd = record_claude_call("task1", step, self.model_name, input_tokens, output_tokens, request_id)
 
                 parsed = None
                 if response_schema:
@@ -218,6 +219,7 @@ class ClaudeProvider(LLMClient):
         client = self._get_client()
 
         b64_data = base64.b64encode(image_bytes).decode("utf-8")
+        check_claude_budget()
         try:
             response = await client.messages.create(
                 model=self.model_name,
@@ -242,7 +244,7 @@ class ClaudeProvider(LLMClient):
 
             input_tokens = response.usage.input_tokens if hasattr(response, "usage") else 0
             output_tokens = response.usage.output_tokens if hasattr(response, "usage") else 0
-            cost_usd = estimate_cost("claude", self.model_name, input_tokens, output_tokens)
+            cost_usd = record_claude_call("task1", step, self.model_name, input_tokens, output_tokens, request_id)
 
             await log_llm_call(
                 request_id=request_id,

@@ -57,38 +57,40 @@
         "cost_per_image_usd": 0.0000774
       }
     },
-    "claude-haiku-placeholder": {
+    "claude-haiku-5-5": {
       "provider": "anthropic",
-      "model_name": "pending-console-id",
+      "model_name": "claude-haiku-5-5",
       "verified": false,
-      "status": "unverified_placeholder_pending_console_ids",
-      "date_checked": "2026-10-16",
       "source_url": "https://www.anthropic.com/pricing",
-      "note": "Awaiting active Claude Haiku model ID from user Anthropic console. Excluded from budget calculations.",
-      "input_cost_per_million": null,
-      "output_cost_per_million": null,
-      "cache_read_cost_per_million": null,
+      "date_checked": "2026-10-16",
+      "input_cost_per_million": 0.10,
+      "output_cost_per_million": 0.50,
+      "cache_read_cost_per_million": 0.01,
+      "cache_write_cost_per_million": 0.125,
       "image_pricing_basis": {
-        "method": "pixel_dimension_formula",
-        "formula": "tokens ≈ (width * height) / 750",
-        "status": "unverified"
+        "method": "visual_tokens_28x28_patches",
+        "formula": "visual_tokens = ceil(width / 28) * ceil(height / 28)",
+        "billed_as": "input_tokens",
+        "cost_per_token_usd": 0.00000010,
+        "source_url": "https://docs.anthropic.com/en/docs/build-with-claude/vision"
       }
     },
-    "claude-sonnet-placeholder": {
+    "claude-sonnet-5-5": {
       "provider": "anthropic",
-      "model_name": "pending-console-id",
+      "model_name": "claude-sonnet-5-5",
       "verified": false,
-      "status": "unverified_placeholder_pending_console_ids",
-      "date_checked": "2026-10-16",
       "source_url": "https://www.anthropic.com/pricing",
-      "note": "Awaiting active Claude Sonnet model ID from user Anthropic console. Excluded from budget calculations.",
-      "input_cost_per_million": null,
-      "output_cost_per_million": null,
-      "cache_read_cost_per_million": null,
+      "date_checked": "2026-10-16",
+      "input_cost_per_million": 2.00,
+      "output_cost_per_million": 10.00,
+      "cache_read_cost_per_million": 0.10,
+      "cache_write_cost_per_million": 2.50,
       "image_pricing_basis": {
-        "method": "pixel_dimension_formula",
-        "formula": "tokens ≈ (width * height) / 750",
-        "status": "unverified"
+        "method": "visual_tokens_28x28_patches",
+        "formula": "visual_tokens = ceil(width / 28) * ceil(height / 28)",
+        "billed_as": "input_tokens",
+        "cost_per_token_usd": 0.00000200,
+        "source_url": "https://docs.anthropic.com/en/docs/build-with-claude/vision"
       }
     }
   }
