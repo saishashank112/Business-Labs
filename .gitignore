@@ -13,16 +13,24 @@ node_modules/
 
 # Environment (secrets)
 .env
-.env.local
+.env.*
+!.env.example
 
-# Databases & vector store
+# Databases & vector store & caches
 *.db
+*.sqlite
+*.sqlite3
 *.db-journal
 *.db-wal
 *.db-shm
 chroma_data/
+raw_html_cache/
+*cache*/
+*.cache
+llm_cache/
+.cache/
 
-# IDE
+# IDE & Editor
 .vscode/
 .idea/
 *.swp
@@ -38,3 +46,14 @@ htmlcov/
 
 # Logs
 *.log
+
+# Spend ledger & locks
+config/claude_spend_ledger.json
+*.lock
+
+# Local scratch and brain folders
+scratch/
+brain/
+.brain/
+.gemini/
+.system_generated/
